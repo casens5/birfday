@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <title>birthdays</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div
+      class="flex h-screen flex-col items-center justify-center gap-4 bg-stone-900"
+    >
+      <label class="flex flex-col items-center justify-center gap-2">
+        birthday:
+        <input type="date" id="birthdateInput" />
+      </label>
+      <button
+        id="getDatesButton"
+        class="w-fit rounded bg-blue-950 p-2 hover:bg-blue-900"
+      >
+        submit
+      </button>
+      <div id="output"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
