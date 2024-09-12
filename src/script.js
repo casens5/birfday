@@ -21,7 +21,7 @@ const timeConsts = {
     jupiterDay: 35733.24, // synodic rotation
     jupiterYear: 374335689.6, // sidereal orbit
     saturnDay: 38361.6, // synodic rotation
-    saturnYear: 929596608, // sidereal orbit THINS IS WRONG
+    saturnYear: 929596608, // sidereal orbit 
     uranusDay: 1489536, // synodic rotation
     uranusYear: 2651218560, // sidereal orbit
     neptuneDay: 1391904, // synodic rotation
