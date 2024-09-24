@@ -1,0 +1,14 @@
+{
+  "name": "birfday",
+  "version": "1.0.0",
+  "main": " ",
+  "scripts": {
+    "watch": "npx tailwindcss -i ./src/main.css -o ./src/output.css --watch"
+  },
+  "author": {
+    "name": "rudolf ordoyne",
+    "email": "rudolfordoyne@protonmail.com"
+  },
+  "license": "GPL-3.0",
+  "description": "your age in other units"
+}
