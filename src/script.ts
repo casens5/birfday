@@ -12,7 +12,7 @@ const timeConsts = {
   sunDay: 2_191_832,
   moonYearSyn: 2_551_442.9, // synodic orbit
   moonYearSid: 2_360_591.5, // sidereal orbit
-  mercuryDay: 364_832_640, // synodic rotation
+  mercuryDay: 5_067_360, // synodic rotation
   mercuryYear: 7_600_521.6, // sidereal orbit
   venusDay: 242_092_800, // synodic rotation
   venusYear: 19_414_166.4, // sidereal orbit
