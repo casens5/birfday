@@ -38,21 +38,25 @@ const output = $("output");
 
 $("getDatesButton")!.addEventListener("click", () => {
   const birthdate = Math.floor(
-    (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
+    // @ts-ignore
+    (new Date().valueOf() - new Date($("birthdateInput")!.value).valueOf()) /
       1000,
   );
   console.log("hi there", birthdate);
-  output.textContent = `${(birthdate / timeConsts.marsYear).toFixed(3)} mars years`;
-  output.textContent += getNextDates(birthdate);
+  output!.textContent = `${(birthdate / timeConsts.marsYear).toFixed(3)} mars years`;
+  output!.textContent += getNextDates(birthdate);
 });
 
 function getNextDates(inputTimestamp: number) {
   const dates = {};
   for (const time in timeConsts) {
+    // @ts-ignore
     const age = inputTimestamp / timeConsts[time];
     const nextAge = Math.ceil(age);
+    // @ts-ignore
     const timeDelta = Math.round((nextAge - age) * timeConsts[time]);
     const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+    // @ts-ignore
     dates[time] = {
       age: age,
       nextAge: nextAge,
