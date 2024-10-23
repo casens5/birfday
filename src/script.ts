@@ -228,7 +228,50 @@ function getNextTriangle(n: number): number {
   return (base ** 2 + base) / 2;
 }
 
-console.log("babo", sequences);
+function createRow(
+  type: string,
+  val: number,
+  date: Date,
+  specialVal: number,
+  specialDate: Date,
+) {
+  const row = document.createElement("div");
+  row.classList.add("gridRow");
+
+  const numberType = document.createElement("div");
+  numberType.classList.add("gridCell");
+  numberType.classList.add("border-left");
+  numberType.textContent = type;
+
+  const nextVal = document.createElement("div");
+  nextVal.classList.add("gridCell");
+  nextVal.textContent = val.toString();
+
+  const nextDate = document.createElement("div");
+  nextDate.classList.add("gridCell");
+  nextDate.textContent = date.toLocaleString();
+
+  const nextInterestingVal = document.createElement("div");
+  nextInterestingVal.classList.add("gridCell");
+  nextInterestingVal.textContent = specialVal.toString();
+
+  const nextInterestingDate = document.createElement("div");
+  nextInterestingDate.classList.add("gridCell");
+  nextInterestingDate.textContent = specialDate.toLocaleString();
+
+  row.appendChild(numberType);
+  row.appendChild(nextVal);
+  row.appendChild(nextDate);
+  row.appendChild(nextInterestingVal);
+  row.appendChild(nextInterestingDate);
+
+  const output = $("output")!;
+  output.appendChild(row);
+}
+
+createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
+
+console.log("the numbers", sequences);
 
 const output = $("output")!;
 
@@ -261,6 +304,6 @@ function getNextDates(inputTimestamp: number) {
       nextDate: nextDate,
     };
   }
-  console.log("tnhnhtn", dates);
+  console.log("the dates", dates);
   return dates;
 }

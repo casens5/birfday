@@ -3,33 +3,115 @@ function $(id) {
     return document.getElementById(id);
 }
 const timeConsts = {
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-    sunDay: 2191832,
-    moonYearSyn: 2551442.9,
-    moonYearSid: 2360591.5,
-    mercuryDay: 5067360,
-    mercuryYear: 7600521.6,
-    venusDay: 242092800,
-    venusYear: 19414166.4,
-    marsDay: 88774.92,
-    marsYear: 59355072,
-    ceresDay: 3266.4,
-    ceresYear: 145164960,
-    jupiterDay: 35733.24,
-    jupiterYear: 374335689.6,
-    saturnDay: 38361.6,
-    saturnYear: 929596608,
-    uranusDay: 1489536,
-    uranusYear: 2651218560,
-    neptuneDay: 1391904,
-    neptuneYear: 5198601600,
-    plutoDay: 13243564.8,
-    plutoYear: 7824384000,
-    planck: 5.391247 * 10 ** -44,
-    cesium: 1 / 9192631770,
+    week: {
+        seconds: 604800,
+        label: "week",
+    },
+    day: { seconds: 86400, label: "day" },
+    hour: {
+        seconds: 3600,
+        label: "hour",
+    },
+    minute: {
+        seconds: 60,
+        label: "minute",
+    },
+    second: {
+        seconds: 1,
+        label: "second",
+    },
+    sunDay: {
+        seconds: 2191832,
+        label: "sun day (sidereal)",
+    },
+    moonYearSyn: {
+        seconds: 2551442.9,
+        label: "moon year (synodic orbit)",
+    },
+    moonYearSid: {
+        seconds: 2360591.5,
+        label: "moon year (sidereal orbit)",
+    },
+    mercuryDay: {
+        seconds: 5067360,
+        label: "mercury day (synodic rotation)",
+    },
+    mercuryYear: {
+        seconds: 7600521.6,
+        label: "mercury year (sidereal orbit)",
+    },
+    venusDay: {
+        seconds: 242092800,
+        label: "venus day (synodic rotation)",
+    },
+    venusYear: {
+        seconds: 19414166.4,
+        label: "venus year (sidereal orbit)",
+    },
+    marsDay: {
+        seconds: 88774.92,
+        label: "mars day (synodic rotation)",
+    },
+    marsYear: {
+        seconds: 59355072,
+        label: "mars year (sidereal orbit)",
+    },
+    ceresDay: {
+        seconds: 3266.4,
+        label: "ceres day (synodic rotation)",
+    },
+    ceresYear: {
+        seconds: 145164960,
+        label: "ceres year (sidereal orbit)",
+    },
+    jupiterDay: {
+        seconds: 35733.24,
+        label: "jupiter day (synodic rotation)",
+    },
+    jupiterYear: {
+        seconds: 374335689.6,
+        label: "jupiter year (sidereal orbit)",
+    },
+    saturnDay: {
+        seconds: 38361.6,
+        label: "saturn day (synodic rotation)",
+    },
+    saturnYear: {
+        seconds: 929596608,
+        label: "saturn year (sidereal orbit)",
+    },
+    uranusDay: {
+        seconds: 1489536,
+        label: "uranus day (synodic rotation)",
+    },
+    uranusYear: {
+        seconds: 2651218560,
+        label: "uranus year (sidereal orbit)",
+    },
+    neptuneDay: {
+        seconds: 1391904,
+        label: "neptune day (synodic rotation)",
+    },
+    neptuneYear: {
+        seconds: 5198601600,
+        label: "neptune year (sidereal orbit)",
+    },
+    plutoDay: {
+        seconds: 13243564.8,
+        label: "pluto day (synodic rotation)",
+    },
+    plutoYear: {
+        seconds: 7824384000,
+        label: "pluto year (sidereal orbit)",
+    },
+    planck: {
+        seconds: 5.391247 * 10 ** -44,
+        label: "planck seconds",
+    },
+    cesium: {
+        seconds: 1 / 9192631770,
+        label: "cesium",
+    },
 };
 const sequences = {
     mersennePrime: {
@@ -64,10 +146,10 @@ function getNextRepDigit(n) {
     }
 }
 function getNextXToPower(n, power) {
-    return power ** Math.ceil(Math.log(n) / Math.log(power));
+    return power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5)));
 }
-function getNextBaseToX(n, base) {
-    return base ** Math.ceil(n ** (1 / base));
+function getNextSquareToDimension(n, dimension) {
+    return Math.ceil(n ** (1 / dimension)) ** dimension;
 }
 function getNextFibonacci(n) {
     if (n === 0) {
@@ -119,7 +201,35 @@ function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return (base ** 2 + base) / 2;
 }
-console.log("babo", sequences);
+function createRow(type, val, date, specialVal, specialDate) {
+    const row = document.createElement("div");
+    row.classList.add("gridRow");
+    const numberType = document.createElement("div");
+    numberType.classList.add("gridCell");
+    numberType.classList.add("border-left");
+    numberType.textContent = type;
+    const nextVal = document.createElement("div");
+    nextVal.classList.add("gridCell");
+    nextVal.textContent = val.toString();
+    const nextDate = document.createElement("div");
+    nextDate.classList.add("gridCell");
+    nextDate.textContent = date.toLocaleString();
+    const nextInterestingVal = document.createElement("div");
+    nextInterestingVal.classList.add("gridCell");
+    nextInterestingVal.textContent = specialVal.toString();
+    const nextInterestingDate = document.createElement("div");
+    nextInterestingDate.classList.add("gridCell");
+    nextInterestingDate.textContent = specialDate.toLocaleString();
+    row.appendChild(numberType);
+    row.appendChild(nextVal);
+    row.appendChild(nextDate);
+    row.appendChild(nextInterestingVal);
+    row.appendChild(nextInterestingDate);
+    const output = $("output");
+    output.appendChild(row);
+}
+createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
+console.log("the numbers", sequences);
 const output = $("output");
 $("getDatesButton").addEventListener("click", () => {
     const birthdate = Math.floor(
@@ -127,17 +237,17 @@ $("getDatesButton").addEventListener("click", () => {
     (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
         1000);
     console.log("hi there", birthdate);
-    output.textContent = `${(birthdate / timeConsts.marsYear).toFixed(3)} mars years`;
-    output.textContent += getNextDates(birthdate);
+    output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
+    getNextDates(birthdate);
 });
 function getNextDates(inputTimestamp) {
     const dates = {};
     for (const time in timeConsts) {
         // @ts-ignore
-        const age = inputTimestamp / timeConsts[time];
+        const age = inputTimestamp / timeConsts[time].seconds;
         const nextAge = Math.ceil(age);
         // @ts-ignore
-        const timeDelta = Math.round((nextAge - age) * timeConsts[time]);
+        const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
         const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
         // @ts-ignore
         dates[time] = {
@@ -147,6 +257,6 @@ function getNextDates(inputTimestamp) {
             nextDate: nextDate,
         };
     }
-    console.log("tnhnhtn", dates);
+    console.log("the dates", dates);
     return dates;
 }
