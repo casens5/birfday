@@ -153,7 +153,7 @@ sequences.perfect.numbers = sequences.mersennePrime.numbers.map(
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
 
-function getNextRepDigit(n: number) {
+function getNextRepDigit(n: number): number {
   const initialDigit = parseInt(n.toString().slice(0, 1));
   const numLength = Math.floor(Math.log(n) / Math.log(10)) + 1;
   const repDigit = parseInt(new Array(numLength).fill(initialDigit).join(""));
@@ -164,15 +164,15 @@ function getNextRepDigit(n: number) {
   }
 }
 
-function getNextXToPower(n: number, power: number) {
-  return power ** Math.ceil(Math.log(n) / Math.log(power));
+function getNextXToPower(n: number, power: number): number {
+  return power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5)));
 }
 
-function getNextBaseToX(n: number, base: number) {
-  return base ** Math.ceil(n ** (1 / base));
+function getNextSquareToDimension(n: number, dimension: number): number {
+  return Math.ceil(n ** (1 / dimension)) ** dimension;
 }
 
-function getNextFibonacci(n: number) {
+function getNextFibonacci(n: number): number {
   if (n === 0) {
     return 0;
   }
@@ -193,7 +193,7 @@ function getNextFibonacci(n: number) {
   return 0;
 }
 
-function getNextBase10(n: number) {
+function getNextBase10(n: number): number {
   if (n < 0) {
     return n;
   }
@@ -205,7 +205,7 @@ function getNextBase10(n: number) {
 }
 
 // ONLY WORKS FOR N > 3
-function getNextLucas(n: number) {
+function getNextLucas(n: number): number {
   const phi = (1 + 5 ** (1 / 2)) / 2;
   let base = Math.round(Math.log(n) / Math.log(phi));
   function luca(n: number) {
@@ -223,7 +223,7 @@ function getNextLucas(n: number) {
   return 0;
 }
 
-function getNextTriangle(n) {
+function getNextTriangle(n: number): number {
   const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
   return (base ** 2 + base) / 2;
 }
