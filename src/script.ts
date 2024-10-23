@@ -5,36 +5,130 @@ function $(id: string): HTMLElement | null {
 }
 
 const timeConsts = {
-  week: 604_800,
-  day: 86_400,
-  hour: 3_600,
-  minute: 60,
-  sunDay: 2_191_832,
-  moonYearSyn: 2_551_442.9, // synodic orbit
-  moonYearSid: 2_360_591.5, // sidereal orbit
-  mercuryDay: 5_067_360, // synodic rotation
-  mercuryYear: 7_600_521.6, // sidereal orbit
-  venusDay: 242_092_800, // synodic rotation
-  venusYear: 19_414_166.4, // sidereal orbit
-  marsDay: 88_774.92, // synodic rotation
-  marsYear: 59_355_072, // sidereal orbit
-  ceresDay: 3_266.4, // synodic rotation
-  ceresYear: 145_164_960, // sidereal orbit
-  jupiterDay: 35_733.24, // synodic rotation
-  jupiterYear: 374_335_689.6, // sidereal orbit
-  saturnDay: 38_361.6, // synodic rotation
-  saturnYear: 929_596_608, // sidereal orbit 
-  uranusDay: 1_489_536, // synodic rotation
-  uranusYear: 2_651_218_560, // sidereal orbit
-  neptuneDay: 1_391_904, // synodic rotation
-  neptuneYear: 5_198_601_600, // sidereal orbit
-  plutoDay: 13_243_564.8, // synodic rotation
-  plutoYear: 7_824_384_000, // sidereal orbit
-  planck: 5.391_247 * 10 ** -44,
-  cesium: 1 / 9_192_631_770,
+  week: {
+    seconds: 604_800,
+    label: "week",
+  },
+  day: { seconds: 86_400, label: "day" },
+  hour: {
+    seconds: 3_600,
+    label: "hour",
+  },
+  minute: {
+    seconds: 60,
+    label: "minute",
+  },
+  second: {
+    seconds: 1, // woah
+    label: "second",
+  },
+  sunDay: {
+    seconds: 2_191_832,
+    label: "sun day (sidereal)",
+  },
+  moonYearSyn: {
+    seconds: 2_551_442.9,
+    label: "moon year (synodic orbit)",
+  },
+  moonYearSid: {
+    seconds: 2_360_591.5,
+    label: "moon year (sidereal orbit)",
+  },
+  mercuryDay: {
+    seconds: 5_067_360,
+    label: "mercury day (synodic rotation)",
+  },
+  mercuryYear: {
+    seconds: 7_600_521.6,
+    label: "mercury year (sidereal orbit)",
+  },
+  venusDay: {
+    seconds: 242_092_800,
+    label: "venus day (synodic rotation)",
+  },
+  venusYear: {
+    seconds: 19_414_166.4,
+    label: "venus year (sidereal orbit)",
+  },
+  marsDay: {
+    seconds: 88_774.92,
+    label: "mars day (synodic rotation)",
+  },
+  marsYear: {
+    seconds: 59_355_072,
+    label: "mars year (sidereal orbit)",
+  },
+  ceresDay: {
+    seconds: 3_266.4,
+    label: "ceres day (synodic rotation)",
+  },
+  ceresYear: {
+    seconds: 145_164_960,
+    label: "ceres year (sidereal orbit)",
+  },
+  jupiterDay: {
+    seconds: 35_733.24,
+    label: "jupiter day (synodic rotation)",
+  },
+  jupiterYear: {
+    seconds: 374_335_689.6,
+    label: "jupiter year (sidereal orbit)",
+  },
+  saturnDay: {
+    seconds: 38_361.6,
+    label: "saturn day (synodic rotation)",
+  },
+  saturnYear: {
+    seconds: 929_596_608,
+    label: "saturn year (sidereal orbit)",
+  },
+  uranusDay: {
+    seconds: 1_489_536,
+    label: "uranus day (synodic rotation)",
+  },
+  uranusYear: {
+    seconds: 2_651_218_560,
+    label: "uranus year (sidereal orbit)",
+  },
+  neptuneDay: {
+    seconds: 1_391_904,
+    label: "neptune day (synodic rotation)",
+  },
+  neptuneYear: {
+    seconds: 5_198_601_600,
+    label: "neptune year (sidereal orbit)",
+  },
+  plutoDay: {
+    seconds: 13_243_564.8,
+    label: "pluto day (synodic rotation)",
+  },
+  plutoYear: {
+    seconds: 7_824_384_000,
+    label: "pluto year (sidereal orbit)",
+  },
+  planck: {
+    seconds: 5.391_247 * 10 ** -44,
+    label: "planck seconds",
+  },
+  cesium: {
+    seconds: 1 / 9_192_631_770,
+    label: "cesium",
+  },
 };
 
-const sequences = {
+interface Sequence {
+  numbers: number[];
+  description: string;
+}
+
+interface Sequences {
+  mersennePrime: Sequence;
+  perfect: Sequence;
+  taxicab: Sequence;
+  lehmer: Sequence;
+}
+
+const sequences: Sequences = {
   mersennePrime: {
     numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
     description: "mersenne prime",
@@ -136,28 +230,29 @@ function getNextTriangle(n) {
 
 console.log("babo", sequences);
 
-const output = $("output");
+const output = $("output")!;
 
 $("getDatesButton")!.addEventListener("click", () => {
   const birthdate = Math.floor(
     // @ts-ignore
-    (new Date().valueOf() - new Date($("birthdateInput")!.value).valueOf()) /
+    (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
       1000,
   );
   console.log("hi there", birthdate);
-  output!.textContent = `${(birthdate / timeConsts.marsYear).toFixed(3)} mars years`;
-  output!.textContent += getNextDates(birthdate);
+  output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
+  getNextDates(birthdate);
 });
 
 function getNextDates(inputTimestamp: number) {
   const dates = {};
   for (const time in timeConsts) {
     // @ts-ignore
-    const age = inputTimestamp / timeConsts[time];
+    const age = inputTimestamp / timeConsts[time].seconds;
     const nextAge = Math.ceil(age);
     // @ts-ignore
-    const timeDelta = Math.round((nextAge - age) * timeConsts[time]);
+    const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
     const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+
     // @ts-ignore
     dates[time] = {
       age: age,
