@@ -327,14 +327,14 @@ function createRow(
   nextInterestingDate.classList.add("gridCell");
   nextInterestingDate.textContent = specialDate.toLocaleString();
 
-  row.appendChild(numberType);
-  row.appendChild(nextVal);
-  row.appendChild(nextDate);
-  row.appendChild(nextInterestingVal);
-  row.appendChild(nextInterestingDate);
+  row.append(numberType);
+  row.append(nextVal);
+  row.append(nextDate);
+  row.append(nextInterestingVal);
+  row.append(nextInterestingDate);
 
   const output = $("output")!;
-  output.appendChild(row);
+  output.append(row);
 }
 
 createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
