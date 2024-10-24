@@ -1,5 +1,9 @@
 "use strict";
 
+// *********
+// utils
+// *********
+
 function $(id: string): HTMLElement | null {
   return document.getElementById(id);
 }
@@ -7,6 +11,10 @@ function $(id: string): HTMLElement | null {
 function capitalize(string: string): string {
   return String(string).charAt(0).toUpperCase() + String(string).slice(1);
 }
+
+// *********
+// timeConsts
+// *********
 
 interface TimeConstType {
   seconds: number;
@@ -161,6 +169,10 @@ const timeConsts: TimeConstsType = {
   },
 };
 
+// *********
+// number sequences
+// *********
+
 interface SequenceType {
   numbers: number[];
   description: string;
@@ -192,11 +204,16 @@ const sequences: SequencesType = {
   },
 };
 
+// compute perfect numbers via the mersennes
 sequences.perfect.numbers = sequences.mersennePrime.numbers.map(
   (x) => x * ((x + 1) / 2),
 );
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
+
+// *********
+// number getter functions
+// *********
 
 function getNextRepDigit(n: number): number {
   const initialDigit = parseInt(n.toString().slice(0, 1));
@@ -273,21 +290,9 @@ function getNextTriangle(n: number): number {
   return (base ** 2 + base) / 2;
 }
 
-//function getCheckedUnits(): TimeConstsType {
-function getCheckedUnits() {
-  const checkedUnits = {};
-  for (const time in timeConsts) {
-    const unit = timeConsts[time];
-    // @ts-ignore
-    const isChecked = $(`checkbox${capitalize(time)}`).checked;
-    if (isChecked) {
-      // @ts-ignore
-      checkedUnits[time] = unit;
-    }
-  }
-  console.log("nthnthnt", checkedUnits);
-  return checkedUnits;
-}
+// *********
+// dom functions
+// *********
 
 function createCheckbox(id: string, label: string, isChecked = true) {
   const labelElement = document.createElement("label");
@@ -310,8 +315,6 @@ function createTimeOptions() {
     drawer.append(input);
   }
 }
-
-createTimeOptions();
 
 function createRow(
   type: string,
@@ -354,22 +357,57 @@ function createRow(
   output.append(row);
 }
 
-createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
+function getNextDates(inputTimestamp: number, units: TimeConstsType) {
+  const dates = {};
+  for (const time in units) {
+    // @ts-ignore
+    const age = inputTimestamp / timeConsts[time].seconds;
+    const nextAge = Math.ceil(age);
+    // @ts-ignore
+    const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
+    const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
 
-console.log("the numbers", sequences);
+    // @ts-ignore
+    dates[time] = {
+      age: age,
+      nextAge: nextAge,
+      timeDelta: timeDelta,
+      nextDate: nextDate,
+    };
+  }
+  return dates;
+}
 
-const output = $("output")!;
+function getCheckedUnits() {
+  const checkedUnits = {};
+  for (const time in timeConsts) {
+    const unit = timeConsts[time];
+    // @ts-ignore
+    const isChecked = $(`checkbox${capitalize(time)}`).checked;
+    if (isChecked) {
+      // @ts-ignore
+      checkedUnits[time] = unit;
+    }
+  }
+  console.log("nthnthnt", checkedUnits);
+  return checkedUnits;
+}
+
+// *********
+// event listeners
+// *********
 
 $("getDatesButton")!.addEventListener("click", () => {
+  const output = $("output")!;
   const birthdate = Math.floor(
     // @ts-ignore
     (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
       1000,
   );
   console.log("hi there", birthdate);
-  output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
-  getNextDates(birthdate);
-  getCheckedUnits();
+  const units = getCheckedUnits();
+  const dates = getNextDates(birthdate, units);
+  console.log("the output", dates);
 });
 
 $("unitLegend")!.addEventListener("click", () => {
@@ -390,24 +428,6 @@ $("unitLegend")!.addEventListener("click", () => {
   }
 });
 
-function getNextDates(inputTimestamp: number) {
-  const dates = {};
-  for (const time in timeConsts) {
-    // @ts-ignore
-    const age = inputTimestamp / timeConsts[time].seconds;
-    const nextAge = Math.ceil(age);
-    // @ts-ignore
-    const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
-    const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+createTimeOptions();
 
-    // @ts-ignore
-    dates[time] = {
-      age: age,
-      nextAge: nextAge,
-      timeDelta: timeDelta,
-      nextDate: nextDate,
-    };
-  }
-  console.log("the dates", dates);
-  return dates;
-}
+createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
