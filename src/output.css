@@ -562,6 +562,10 @@ video {
   display: flex;
 }
 
+.hidden {
+  display: none;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -569,6 +573,10 @@ video {
 .w-fit {
   width: -moz-fit-content;
   width: fit-content;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -607,6 +615,10 @@ video {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 
 .gridCell {

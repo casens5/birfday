@@ -2,115 +2,149 @@
 function $(id) {
     return document.getElementById(id);
 }
+function capitalize(string) {
+    return String(string).charAt(0).toUpperCase() + String(string).slice(1);
+}
 const timeConsts = {
     week: {
         seconds: 604800,
         label: "week",
+        isChecked: true,
     },
-    day: { seconds: 86400, label: "day" },
+    day: {
+        seconds: 86400,
+        label: "day",
+        isChecked: true,
+    },
     hour: {
         seconds: 3600,
         label: "hour",
+        isChecked: true,
     },
     minute: {
         seconds: 60,
         label: "minute",
+        isChecked: true,
     },
     second: {
         seconds: 1,
         label: "second",
+        isChecked: true,
     },
     sunDay: {
         seconds: 2191832,
         label: "sun day (sidereal)",
+        isChecked: false,
     },
     moonYearSyn: {
         seconds: 2551442.9,
         label: "moon year (synodic orbit)",
+        isChecked: false,
     },
     moonYearSid: {
         seconds: 2360591.5,
         label: "moon year (sidereal orbit)",
+        isChecked: false,
     },
     mercuryDay: {
         seconds: 5067360,
         label: "mercury day (synodic rotation)",
+        isChecked: false,
     },
     mercuryYear: {
         seconds: 7600521.6,
         label: "mercury year (sidereal orbit)",
+        isChecked: false,
     },
     venusDay: {
         seconds: 242092800,
         label: "venus day (synodic rotation)",
+        isChecked: false,
     },
     venusYear: {
         seconds: 19414166.4,
         label: "venus year (sidereal orbit)",
+        isChecked: false,
     },
     marsDay: {
         seconds: 88774.92,
         label: "mars day (synodic rotation)",
+        isChecked: false,
     },
     marsYear: {
         seconds: 59355072,
         label: "mars year (sidereal orbit)",
+        isChecked: false,
     },
     ceresDay: {
         seconds: 3266.4,
         label: "ceres day (synodic rotation)",
+        isChecked: false,
     },
     ceresYear: {
         seconds: 145164960,
         label: "ceres year (sidereal orbit)",
+        isChecked: false,
     },
     jupiterDay: {
         seconds: 35733.24,
         label: "jupiter day (synodic rotation)",
+        isChecked: false,
     },
     jupiterYear: {
         seconds: 374335689.6,
         label: "jupiter year (sidereal orbit)",
+        isChecked: false,
     },
     saturnDay: {
         seconds: 38361.6,
         label: "saturn day (synodic rotation)",
+        isChecked: false,
     },
     saturnYear: {
         seconds: 929596608,
         label: "saturn year (sidereal orbit)",
+        isChecked: false,
     },
     uranusDay: {
         seconds: 1489536,
         label: "uranus day (synodic rotation)",
+        isChecked: false,
     },
     uranusYear: {
         seconds: 2651218560,
         label: "uranus year (sidereal orbit)",
+        isChecked: false,
     },
     neptuneDay: {
         seconds: 1391904,
         label: "neptune day (synodic rotation)",
+        isChecked: false,
     },
     neptuneYear: {
         seconds: 5198601600,
         label: "neptune year (sidereal orbit)",
+        isChecked: false,
     },
     plutoDay: {
         seconds: 13243564.8,
         label: "pluto day (synodic rotation)",
+        isChecked: false,
     },
     plutoYear: {
         seconds: 7824384000,
         label: "pluto year (sidereal orbit)",
+        isChecked: false,
     },
     planck: {
         seconds: 5.391247 * 10 ** -44,
         label: "planck seconds",
+        isChecked: false,
     },
     cesium: {
         seconds: 1 / 9192631770,
         label: "cesium",
+        isChecked: false,
     },
 };
 const sequences = {
@@ -201,6 +235,42 @@ function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return (base ** 2 + base) / 2;
 }
+//function getCheckedUnits(): TimeConstsType {
+function getCheckedUnits() {
+    const checkedUnits = {};
+    for (const time in timeConsts) {
+        const unit = timeConsts[time];
+        // @ts-ignore
+        const isChecked = $(`checkbox${capitalize(time)}`).checked;
+        if (isChecked) {
+            // @ts-ignore
+            checkedUnits[time] = unit;
+        }
+    }
+    console.log("nthnthnt", checkedUnits);
+    return checkedUnits;
+}
+function createCheckbox(id, label, isChecked = true) {
+    const labelElement = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    // @ts-ignore
+    checkbox.checked = isChecked;
+    checkbox.style.marginRight = "12px";
+    checkbox.id = `checkbox${capitalize(id)}`;
+    labelElement.append(checkbox, label);
+    return labelElement;
+}
+function createTimeOptions() {
+    const drawer = $("unitDrawer");
+    for (const time in timeConsts) {
+        // @ts-ignore
+        const unit = timeConsts[time];
+        const input = createCheckbox(time, unit.label, unit.isChecked);
+        drawer.append(input);
+    }
+}
+createTimeOptions();
 function createRow(type, val, date, specialVal, specialDate) {
     const row = document.createElement("div");
     row.classList.add("gridRow");
@@ -220,13 +290,13 @@ function createRow(type, val, date, specialVal, specialDate) {
     const nextInterestingDate = document.createElement("div");
     nextInterestingDate.classList.add("gridCell");
     nextInterestingDate.textContent = specialDate.toLocaleString();
-    row.appendChild(numberType);
-    row.appendChild(nextVal);
-    row.appendChild(nextDate);
-    row.appendChild(nextInterestingVal);
-    row.appendChild(nextInterestingDate);
+    row.append(numberType);
+    row.append(nextVal);
+    row.append(nextDate);
+    row.append(nextInterestingVal);
+    row.append(nextInterestingDate);
     const output = $("output");
-    output.appendChild(row);
+    output.append(row);
 }
 createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
 console.log("the numbers", sequences);
@@ -239,6 +309,25 @@ $("getDatesButton").addEventListener("click", () => {
     console.log("hi there", birthdate);
     output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
     getNextDates(birthdate);
+    getCheckedUnits();
+});
+$("unitLegend").addEventListener("click", () => {
+    const drawer = $("unitDrawer");
+    const upArrow = $("unitUpArrow");
+    const downArrow = $("unitDownArrow");
+    // @ts-ignore
+    drawer.value = !drawer.value;
+    // @ts-ignore
+    if (drawer.value) {
+        drawer.classList.remove("hidden");
+        downArrow.classList.add("hidden");
+        upArrow.classList.remove("hidden");
+    }
+    else {
+        drawer.classList.add("hidden");
+        downArrow.classList.remove("hidden");
+        upArrow.classList.add("hidden");
+    }
 });
 function getNextDates(inputTimestamp) {
     const dates = {};
