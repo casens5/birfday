@@ -4,131 +4,176 @@ function $(id: string): HTMLElement | null {
   return document.getElementById(id);
 }
 
-const timeConsts = {
+function capitalize(string: string): string {
+  return String(string).charAt(0).toUpperCase() + String(string).slice(1);
+}
+
+interface TimeConstType {
+  seconds: number;
+  label: string;
+  isChecked: boolean;
+}
+
+interface TimeConstsType {
+  [key: string]: TimeConstType;
+}
+
+const timeConsts: TimeConstsType = {
   week: {
     seconds: 604_800,
     label: "week",
+    isChecked: true,
   },
-  day: { seconds: 86_400, label: "day" },
+  day: {
+    seconds: 86_400,
+    label: "day",
+    isChecked: true,
+  },
   hour: {
     seconds: 3_600,
     label: "hour",
+    isChecked: true,
   },
   minute: {
     seconds: 60,
     label: "minute",
+    isChecked: true,
   },
   second: {
     seconds: 1, // woah
     label: "second",
+    isChecked: true,
   },
   sunDay: {
     seconds: 2_191_832,
     label: "sun day (sidereal)",
+    isChecked: false,
   },
   moonYearSyn: {
     seconds: 2_551_442.9,
     label: "moon year (synodic orbit)",
+    isChecked: false,
   },
   moonYearSid: {
     seconds: 2_360_591.5,
     label: "moon year (sidereal orbit)",
+    isChecked: false,
   },
   mercuryDay: {
     seconds: 5_067_360,
     label: "mercury day (synodic rotation)",
+    isChecked: false,
   },
   mercuryYear: {
     seconds: 7_600_521.6,
     label: "mercury year (sidereal orbit)",
+    isChecked: false,
   },
   venusDay: {
     seconds: 242_092_800,
     label: "venus day (synodic rotation)",
+    isChecked: false,
   },
   venusYear: {
     seconds: 19_414_166.4,
     label: "venus year (sidereal orbit)",
+    isChecked: false,
   },
   marsDay: {
     seconds: 88_774.92,
     label: "mars day (synodic rotation)",
+    isChecked: false,
   },
   marsYear: {
     seconds: 59_355_072,
     label: "mars year (sidereal orbit)",
+    isChecked: false,
   },
   ceresDay: {
     seconds: 3_266.4,
     label: "ceres day (synodic rotation)",
+    isChecked: false,
   },
   ceresYear: {
     seconds: 145_164_960,
     label: "ceres year (sidereal orbit)",
+    isChecked: false,
   },
   jupiterDay: {
     seconds: 35_733.24,
     label: "jupiter day (synodic rotation)",
+    isChecked: false,
   },
   jupiterYear: {
     seconds: 374_335_689.6,
     label: "jupiter year (sidereal orbit)",
+    isChecked: false,
   },
   saturnDay: {
     seconds: 38_361.6,
     label: "saturn day (synodic rotation)",
+    isChecked: false,
   },
   saturnYear: {
     seconds: 929_596_608,
     label: "saturn year (sidereal orbit)",
+    isChecked: false,
   },
   uranusDay: {
     seconds: 1_489_536,
     label: "uranus day (synodic rotation)",
+    isChecked: false,
   },
   uranusYear: {
     seconds: 2_651_218_560,
     label: "uranus year (sidereal orbit)",
+    isChecked: false,
   },
   neptuneDay: {
     seconds: 1_391_904,
     label: "neptune day (synodic rotation)",
+    isChecked: false,
   },
   neptuneYear: {
     seconds: 5_198_601_600,
     label: "neptune year (sidereal orbit)",
+    isChecked: false,
   },
   plutoDay: {
     seconds: 13_243_564.8,
     label: "pluto day (synodic rotation)",
+    isChecked: false,
   },
   plutoYear: {
     seconds: 7_824_384_000,
     label: "pluto year (sidereal orbit)",
+    isChecked: false,
   },
   planck: {
     seconds: 5.391_247 * 10 ** -44,
     label: "planck seconds",
+    isChecked: false,
   },
   cesium: {
     seconds: 1 / 9_192_631_770,
     label: "cesium",
+    isChecked: false,
   },
 };
 
-interface Sequence {
+interface SequenceType {
   numbers: number[];
   description: string;
 }
 
-interface Sequences {
-  mersennePrime: Sequence;
-  perfect: Sequence;
-  taxicab: Sequence;
-  lehmer: Sequence;
+interface SequencesType {
+  mersennePrime: SequenceType;
+  perfect: SequenceType;
+  taxicab: SequenceType;
+  lehmer: SequenceType;
 }
 
-const sequences: Sequences = {
+const sequences: SequencesType = {
   mersennePrime: {
     numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
     description: "mersenne prime",
@@ -227,6 +272,29 @@ function getNextTriangle(n: number): number {
   const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
   return (base ** 2 + base) / 2;
 }
+function createCheckbox(id: string, label: string, isChecked = true) {
+  const labelElement = document.createElement("label");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  // @ts-ignore
+  checkbox.checked = isChecked;
+  checkbox.style.marginRight = "12px";
+  checkbox.id = `checkbox${capitalize(id)}`;
+  labelElement.append(checkbox, label);
+  return labelElement;
+}
+
+function createTimeOptions() {
+  const drawer = $("unitDrawer")!;
+  for (const time in timeConsts) {
+    // @ts-ignore
+    const unit = timeConsts[time];
+    const input = createCheckbox(time, unit.label, unit.isChecked);
+    drawer.append(input);
+  }
+}
+
+createTimeOptions();
 
 function createRow(
   type: string,
@@ -284,6 +352,23 @@ $("getDatesButton")!.addEventListener("click", () => {
   console.log("hi there", birthdate);
   output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
   getNextDates(birthdate);
+
+$("unitLegend")!.addEventListener("click", () => {
+  const drawer = $("unitDrawer")!;
+  const upArrow = $("unitUpArrow")!;
+  const downArrow = $("unitDownArrow")!;
+  // @ts-ignore
+  drawer.value = !drawer.value;
+  // @ts-ignore
+  if (drawer.value) {
+    drawer.classList.remove("hidden");
+    downArrow.classList.add("hidden");
+    upArrow.classList.remove("hidden");
+  } else {
+    drawer.classList.add("hidden");
+    downArrow.classList.remove("hidden");
+    upArrow.classList.add("hidden");
+  }
 });
 
 function getNextDates(inputTimestamp: number) {
