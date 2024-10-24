@@ -272,6 +272,23 @@ function getNextTriangle(n: number): number {
   const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
   return (base ** 2 + base) / 2;
 }
+
+//function getCheckedUnits(): TimeConstsType {
+function getCheckedUnits() {
+  const checkedUnits = {};
+  for (const time in timeConsts) {
+    const unit = timeConsts[time];
+    // @ts-ignore
+    const isChecked = $(`checkbox${capitalize(time)}`).checked;
+    if (isChecked) {
+      // @ts-ignore
+      checkedUnits[time] = unit;
+    }
+  }
+  console.log("nthnthnt", checkedUnits);
+  return checkedUnits;
+}
+
 function createCheckbox(id: string, label: string, isChecked = true) {
   const labelElement = document.createElement("label");
   const checkbox = document.createElement("input");
@@ -352,6 +369,8 @@ $("getDatesButton")!.addEventListener("click", () => {
   console.log("hi there", birthdate);
   output.textContent = `${(birthdate / timeConsts.marsYear.seconds).toFixed(3)} mars years`;
   getNextDates(birthdate);
+  getCheckedUnits();
+});
 
 $("unitLegend")!.addEventListener("click", () => {
   const drawer = $("unitDrawer")!;
