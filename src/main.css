@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.gridCell {
+td,
+th {
   border-width: 1px;
   border-style: solid;
   border-color: #888;

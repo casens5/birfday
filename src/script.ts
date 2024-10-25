@@ -412,13 +412,12 @@ $("getDatesButton")!.addEventListener("click", () => {
   output.replaceChildren();
 
   for (const time in dates) {
-    createRow(
-      units[time].label,
-      dates[time].nextAge,
-      dates[time].nextDate,
-      5,
-      new Date(),
-    );
+    createRow(units[time].label, [
+      {
+        value: dates[time].nextAge,
+        label: dates[time].nextDate,
+      },
+    ]);
   }
 });
 
