@@ -287,6 +287,57 @@ function getNextTriangle(n: number): number {
   return (base ** 2 + base) / 2;
 }
 
+function getInterestingValues(n: number): InterestingValueType[] {
+  const interestingValues = [
+    {
+      value: getNextBase10(n),
+      label: "base 10",
+    },
+    {
+      value: getNextLucas(n),
+      label: "lucas number",
+    },
+    {
+      value: getNextRepDigit(n),
+      label: "repeated digit",
+    },
+    {
+      value: getNextTriangle(n),
+      label: "triangle number",
+    },
+    {
+      value: getNextFibonacci(n),
+      label: "fibonacci number",
+    },
+    {
+      value: getNextSquareToDimension(n, 2),
+      label: "square number",
+    },
+    {
+      value: getNextSquareToDimension(n, 3),
+      label: "cube number",
+    },
+    {
+      value: getNextSquareToDimension(n, 4),
+      label: "tessaract number",
+    },
+  ];
+
+  for (const s in sequences) {
+    const sequence = sequences[s];
+    const nextValue = sequence.numbers.find((number: number) => number >= n);
+    if (nextValue != null) {
+      interestingValues.push({
+        value: nextValue,
+        label: sequence.label,
+      });
+    }
+  }
+
+  // @ts-ignore
+  return interestingValues;
+}
+
 // *********
 // dom functions
 // *********
@@ -324,28 +375,36 @@ function createRow(type: string, interestingValues: InterestingValueType[]) {
 
   const numberType = document.createElement("th");
   numberType.textContent = type;
+  numberType.rowSpan = interestingValues.length;
   row.append(numberType);
 
   const output = $("output")!;
   output.append(row);
 
   interestingValues.forEach((value, index) => {
-    const nextValue = document.createElement("td");
-    const nextDate = document.createElement("td");
+    const valueDiv = document.createElement("td");
+    const labelDiv = document.createElement("td");
+    const dateDiv = document.createElement("td");
     if (index === 0) {
-      row.append(nextValue, nextDate);
+      row.append(valueDiv, labelDiv, dateDiv);
     } else {
       const subRow = document.createElement("tr");
-      subRow.append(nextValue, nextDate);
+      subRow.append(valueDiv, labelDiv, dateDiv);
       output.append(subRow);
     }
 
-    nextValue.textContent = value.value.toLocaleString();
-    nextDate.textContent = value.label.toLocaleString();
+    valueDiv.textContent = value.value.toLocaleString();
+    labelDiv.textContent = value.label.toString();
+    dateDiv.textContent = value.date!.toLocaleString();
   });
 }
 
-function getNextDates(inputTimestamp: number, units: TimeConstsType) {
+function getNextDates(
+  inputTimestamp: number,
+  units: TimeConstsType,
+  numbers: InterestingValueType,
+  maxDate: date,
+) {
   const dates = {};
   for (const time in units) {
     // @ts-ignore
@@ -355,13 +414,34 @@ function getNextDates(inputTimestamp: number, units: TimeConstsType) {
     const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
     const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
 
+    const interestingValues = getInterestingValues(nextAge);
+    interestingValues.sort((a, b) => a.value - b.value);
+
     // @ts-ignore
-    dates[time] = {
-      age: age,
-      nextAge: nextAge,
-      timeDelta: timeDelta,
-      nextDate: nextDate,
-    };
+    const valuesWithDates = [];
+    interestingValues.forEach((interestingValue) => {
+      const thisDelta = Math.round(
+        (interestingValue.value - age) * timeConsts[time].seconds,
+      );
+      const thisDate = new Date(new Date().valueOf() + thisDelta * 1000);
+      if (thisDate < maxDate) {
+        valuesWithDates.push({
+          value: interestingValue.value,
+          date: new Date(new Date().valueOf() + thisDelta * 1000),
+          label: interestingValue.label,
+        });
+      }
+    });
+
+    // @ts-ignore
+    dates[time] = [
+      {
+        value: nextAge,
+        date: nextDate,
+        label: "next integer",
+      },
+      ...valuesWithDates,
+    ];
   }
   return dates;
 }
@@ -393,19 +473,16 @@ $("getDatesButton")!.addEventListener("click", () => {
       1000,
   );
   const units = getCheckedUnits();
-  const dates = getNextDates(birthdate, units);
+  const tenYears = new Date();
+  tenYears.setFullYear(tenYears.getFullYear() + 10);
+  const dates = getNextDates(birthdate, units, null, tenYears);
   console.log("the output", dates);
 
   // clear any previous rows
   output.replaceChildren();
 
   for (const time in dates) {
-    createRow(units[time].label, [
-      {
-        value: dates[time].nextAge,
-        label: dates[time].nextDate,
-      },
-    ]);
+    createRow(units[time].label, dates[time]);
   }
 });
 

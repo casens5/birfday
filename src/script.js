@@ -153,19 +153,19 @@ const timeConsts = {
 const sequences = {
     mersennePrime: {
         numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
-        description: "mersenne prime",
+        label: "mersenne prime",
     },
     perfect: {
         numbers: [],
-        description: "perfect number",
+        label: "perfect number",
     },
     taxicab: {
         numbers: [1729],
-        description: "taxicab",
+        label: "taxicab number",
     },
     lehmer: {
         numbers: [276, 552, 564, 660, 966],
-        description: "lehmer number",
+        label: "lehmer number",
     },
 };
 // compute perfect numbers via the mersennes
@@ -242,6 +242,54 @@ function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return (base ** 2 + base) / 2;
 }
+function getInterestingValues(n) {
+    const interestingValues = [
+        {
+            value: getNextBase10(n),
+            label: "base 10",
+        },
+        {
+            value: getNextLucas(n),
+            label: "lucas number",
+        },
+        {
+            value: getNextRepDigit(n),
+            label: "repeated digit",
+        },
+        {
+            value: getNextTriangle(n),
+            label: "triangle number",
+        },
+        {
+            value: getNextFibonacci(n),
+            label: "fibonacci number",
+        },
+        {
+            value: getNextSquareToDimension(n, 2),
+            label: "square number",
+        },
+        {
+            value: getNextSquareToDimension(n, 3),
+            label: "cube number",
+        },
+        {
+            value: getNextSquareToDimension(n, 4),
+            label: "tessaract number",
+        },
+    ];
+    for (const s in sequences) {
+        const sequence = sequences[s];
+        const nextValue = sequence.numbers.find((number) => number >= n);
+        if (nextValue != null) {
+            interestingValues.push({
+                value: nextValue,
+                label: sequence.label,
+            });
+        }
+    }
+    // @ts-ignore
+    return interestingValues;
+}
 // *********
 // dom functions
 // *********
@@ -265,34 +313,32 @@ function createTimeOptions() {
         drawer.append(input);
     }
 }
-function createRow(type, val, date, specialVal, specialDate) {
+function createRow(type, interestingValues) {
     const row = document.createElement("tr");
-    row.classList.add("gridRow");
-    const numberType = document.createElement("td");
-    numberType.classList.add("gridCell");
-    numberType.classList.add("border-left");
+    const numberType = document.createElement("th");
     numberType.textContent = type;
-    const nextVal = document.createElement("td");
-    nextVal.classList.add("gridCell");
-    nextVal.textContent = val.toLocaleString();
-    const nextDate = document.createElement("td");
-    nextDate.classList.add("gridCell");
-    nextDate.textContent = date.toLocaleString();
-    const nextInterestingVal = document.createElement("td");
-    nextInterestingVal.classList.add("gridCell");
-    nextInterestingVal.textContent = specialVal.toLocaleString();
-    const nextInterestingDate = document.createElement("td");
-    nextInterestingDate.classList.add("gridCell");
-    nextInterestingDate.textContent = specialDate.toLocaleString();
+    numberType.rowSpan = interestingValues.length;
     row.append(numberType);
-    row.append(nextVal);
-    row.append(nextDate);
-    row.append(nextInterestingVal);
-    row.append(nextInterestingDate);
     const output = $("output");
     output.append(row);
+    interestingValues.forEach((value, index) => {
+        const valueDiv = document.createElement("td");
+        const labelDiv = document.createElement("td");
+        const dateDiv = document.createElement("td");
+        if (index === 0) {
+            row.append(valueDiv, labelDiv, dateDiv);
+        }
+        else {
+            const subRow = document.createElement("tr");
+            subRow.append(valueDiv, labelDiv, dateDiv);
+            output.append(subRow);
+        }
+        valueDiv.textContent = value.value.toLocaleString();
+        labelDiv.textContent = value.label.toString();
+        dateDiv.textContent = value.date.toLocaleString();
+    });
 }
-function getNextDates(inputTimestamp, units) {
+function getNextDates(inputTimestamp, units, numbers, maxDate) {
     const dates = {};
     for (const time in units) {
         // @ts-ignore
@@ -301,13 +347,30 @@ function getNextDates(inputTimestamp, units) {
         // @ts-ignore
         const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
         const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+        const interestingValues = getInterestingValues(nextAge);
+        interestingValues.sort((a, b) => a.value - b.value);
         // @ts-ignore
-        dates[time] = {
-            age: age,
-            nextAge: nextAge,
-            timeDelta: timeDelta,
-            nextDate: nextDate,
-        };
+        const valuesWithDates = [];
+        interestingValues.forEach((interestingValue) => {
+            const thisDelta = Math.round((interestingValue.value - age) * timeConsts[time].seconds);
+            const thisDate = new Date(new Date().valueOf() + thisDelta * 1000);
+            if (thisDate < maxDate) {
+                valuesWithDates.push({
+                    value: interestingValue.value,
+                    date: new Date(new Date().valueOf() + thisDelta * 1000),
+                    label: interestingValue.label,
+                });
+            }
+        });
+        // @ts-ignore
+        dates[time] = [
+            {
+                value: nextAge,
+                date: nextDate,
+                label: "next integer",
+            },
+            ...valuesWithDates,
+        ];
     }
     return dates;
 }
@@ -335,12 +398,14 @@ $("getDatesButton").addEventListener("click", () => {
     (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
         1000);
     const units = getCheckedUnits();
-    const dates = getNextDates(birthdate, units);
+    const tenYears = new Date();
+    tenYears.setFullYear(tenYears.getFullYear() + 10);
+    const dates = getNextDates(birthdate, units, null, tenYears);
     console.log("the output", dates);
     // clear any previous rows
     output.replaceChildren();
     for (const time in dates) {
-        createRow(units[time].label, dates[time].nextAge, dates[time].nextDate, 5, new Date());
+        createRow(units[time].label, dates[time]);
     }
 });
 $("unitLegend").addEventListener("click", () => {
