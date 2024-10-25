@@ -323,27 +323,27 @@ function createRow(
   specialVal: number,
   specialDate: Date,
 ) {
-  const row = document.createElement("div");
+  const row = document.createElement("tr");
   row.classList.add("gridRow");
 
-  const numberType = document.createElement("div");
+  const numberType = document.createElement("td");
   numberType.classList.add("gridCell");
   numberType.classList.add("border-left");
   numberType.textContent = type;
 
-  const nextVal = document.createElement("div");
+  const nextVal = document.createElement("td");
   nextVal.classList.add("gridCell");
-  nextVal.textContent = val.toString();
+  nextVal.textContent = val.toLocaleString();
 
-  const nextDate = document.createElement("div");
+  const nextDate = document.createElement("td");
   nextDate.classList.add("gridCell");
   nextDate.textContent = date.toLocaleString();
 
-  const nextInterestingVal = document.createElement("div");
+  const nextInterestingVal = document.createElement("td");
   nextInterestingVal.classList.add("gridCell");
-  nextInterestingVal.textContent = specialVal.toString();
+  nextInterestingVal.textContent = specialVal.toLocaleString();
 
-  const nextInterestingDate = document.createElement("div");
+  const nextInterestingDate = document.createElement("td");
   nextInterestingDate.classList.add("gridCell");
   nextInterestingDate.textContent = specialDate.toLocaleString();
 
@@ -404,10 +404,22 @@ $("getDatesButton")!.addEventListener("click", () => {
     (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
       1000,
   );
-  console.log("hi there", birthdate);
   const units = getCheckedUnits();
   const dates = getNextDates(birthdate, units);
   console.log("the output", dates);
+
+  // clear any previous rows
+  output.replaceChildren();
+
+  for (const time in dates) {
+    createRow(
+      units[time].label,
+      dates[time].nextAge,
+      dates[time].nextDate,
+      5,
+      new Date(),
+    );
+  }
 });
 
 $("unitLegend")!.addEventListener("click", () => {
@@ -429,5 +441,3 @@ $("unitLegend")!.addEventListener("click", () => {
 });
 
 createTimeOptions();
-
-createRow("baba", 1, new Date(2001, 1, 5), 5, new Date());
