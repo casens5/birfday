@@ -4,7 +4,7 @@
   "main": " ",
   "scripts": {
     "watch:ts": "tsc --watch",
-    "watch:css": "tailwindcss -i ./src/main.css -o ./src/output.css --watch",
+    "watch:css": "tailwindcss -i ./main.css -o ./output.css --watch",
     "watch": "npm-run-all --parallel watch:*"
   },
   "author": {
