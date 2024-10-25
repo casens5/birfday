@@ -175,32 +175,29 @@ const timeConsts: TimeConstsType = {
 
 interface SequenceType {
   numbers: number[];
-  description: string;
+  label: string;
 }
 
 interface SequencesType {
-  mersennePrime: SequenceType;
-  perfect: SequenceType;
-  taxicab: SequenceType;
-  lehmer: SequenceType;
+  [key: string]: SequenceType;
 }
 
 const sequences: SequencesType = {
   mersennePrime: {
     numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
-    description: "mersenne prime",
+    label: "mersenne prime",
   },
   perfect: {
     numbers: [],
-    description: "perfect number",
+    label: "perfect number",
   },
   taxicab: {
     numbers: [1729],
-    description: "taxicab",
+    label: "taxicab number",
   },
   lehmer: {
     numbers: [276, 552, 564, 660, 966],
-    description: "lehmer number",
+    label: "lehmer number",
   },
 };
 
@@ -316,45 +313,36 @@ function createTimeOptions() {
   }
 }
 
-function createRow(
-  type: string,
-  val: number,
-  date: Date,
-  specialVal: number,
-  specialDate: Date,
-) {
+interface InterestingValueType {
+  value: number;
+  date?: Date;
+  label: string;
+}
+
+function createRow(type: string, interestingValues: InterestingValueType[]) {
   const row = document.createElement("tr");
-  row.classList.add("gridRow");
 
-  const numberType = document.createElement("td");
-  numberType.classList.add("gridCell");
-  numberType.classList.add("border-left");
+  const numberType = document.createElement("th");
   numberType.textContent = type;
-
-  const nextVal = document.createElement("td");
-  nextVal.classList.add("gridCell");
-  nextVal.textContent = val.toLocaleString();
-
-  const nextDate = document.createElement("td");
-  nextDate.classList.add("gridCell");
-  nextDate.textContent = date.toLocaleString();
-
-  const nextInterestingVal = document.createElement("td");
-  nextInterestingVal.classList.add("gridCell");
-  nextInterestingVal.textContent = specialVal.toLocaleString();
-
-  const nextInterestingDate = document.createElement("td");
-  nextInterestingDate.classList.add("gridCell");
-  nextInterestingDate.textContent = specialDate.toLocaleString();
-
   row.append(numberType);
-  row.append(nextVal);
-  row.append(nextDate);
-  row.append(nextInterestingVal);
-  row.append(nextInterestingDate);
 
   const output = $("output")!;
   output.append(row);
+
+  interestingValues.forEach((value, index) => {
+    const nextValue = document.createElement("td");
+    const nextDate = document.createElement("td");
+    if (index === 0) {
+      row.append(nextValue, nextDate);
+    } else {
+      const subRow = document.createElement("tr");
+      subRow.append(nextValue, nextDate);
+      output.append(subRow);
+    }
+
+    nextValue.textContent = value.value.toLocaleString();
+    nextDate.textContent = value.label.toLocaleString();
+  });
 }
 
 function getNextDates(inputTimestamp: number, units: TimeConstsType) {
