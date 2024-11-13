@@ -12,6 +12,11 @@ function capitalize(string: string): string {
   return String(string).charAt(0).toUpperCase() + String(string).slice(1);
 }
 
+function myDate(date: Date): string {
+  // jesus christ
+  return `${String(date.getFullYear()).padStart(4, "0")} ${date.toLocaleString("en-US", { month: "long" })} ${String(date.getDate()).padStart(2, "0")}, ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+}
+
 // *********
 // timeConsts
 // *********
@@ -212,6 +217,11 @@ sequences.perfect.numbers.pop();
 // number getter functions
 // *********
 
+interface AnnotatedNumber {
+  val: number;
+  n: number;
+}
+
 function getNextRepDigit(n: number): number {
   const initialDigit = parseInt(n.toString().slice(0, 1));
   const numLength = Math.floor(Math.log(n) / Math.log(10)) + 1;
@@ -223,17 +233,26 @@ function getNextRepDigit(n: number): number {
   }
 }
 
-function getNextXToPower(n: number, power: number): number {
-  return power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5)));
+function getNextXToPower(n: number, power: number): AnnotatedNumber {
+  return {
+    val: power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
+    n: Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
+  };
 }
 
-function getNextSquareToDimension(n: number, dimension: number): number {
-  return Math.ceil(n ** (1 / dimension)) ** dimension;
+function getNextSquareToDimension(
+  n: number,
+  dimension: number,
+): AnnotatedNumber {
+  return {
+    val: Math.ceil(n ** (1 / dimension)) ** dimension,
+    n: Math.ceil(n ** (1 / dimension)),
+  };
 }
 
-function getNextFibonacci(n: number): number {
+function getNextFibonacci(n: number): AnnotatedNumber {
   if (n === 0) {
-    return 0;
+    return { val: -1, n: -1 };
   }
   const phi = (1 + 5 ** (1 / 2)) / 2;
   let base = 1 + Math.floor(Math.log(n) / Math.log(phi));
@@ -244,12 +263,12 @@ function getNextFibonacci(n: number): number {
   // why be a good mathematician anyway?
   for (let i = 0; i < 10; i++) {
     if (binet(base) >= n) {
-      return binet(base);
+      return { val: binet(base), n: base };
     }
     base += 1;
   }
   // should never happen >:(
-  return 0;
+  return { val: -1, n: -1 };
 }
 
 function getNextBase10(n: number): number {
@@ -263,8 +282,12 @@ function getNextBase10(n: number): number {
   return Math.ceil(n / 10 ** digits) * 10 ** digits;
 }
 
-// ONLY WORKS FOR N > 3
-function getNextLucas(n: number): number {
+function getNextLucas(n: number): AnnotatedNumber {
+  // ONLY WORKS FOR N > 3
+  if (n < 3) {
+    return { val: -1, n: -1 };
+  }
+
   const phi = (1 + 5 ** (1 / 2)) / 2;
   let base = Math.round(Math.log(n) / Math.log(phi));
   function luca(n: number) {
@@ -274,17 +297,17 @@ function getNextLucas(n: number): number {
   // why be a good mathematician anyway?
   for (let i = 0; i < 10; i++) {
     if (luca(base) >= n) {
-      return luca(base);
+      return { val: luca(base), n: base };
     }
     base += 1;
   }
   // should never happen
-  return 0;
+  return { val: -1, n: -1 };
 }
 
-function getNextTriangle(n: number): number {
+function getNextTriangle(n: number): AnnotatedNumber {
   const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
-  return (base ** 2 + base) / 2;
+  return { val: (base ** 2 + base) / 2, n: base };
 }
 
 function getInterestingValues(n: number): InterestingValueType[] {
@@ -294,32 +317,92 @@ function getInterestingValues(n: number): InterestingValueType[] {
       label: "base 10",
     },
     {
-      value: getNextLucas(n),
-      label: "lucas number",
+      value: getNextLucas(n).val,
+      label: `lucas number, L(${getNextLucas(n).n})`,
     },
     {
       value: getNextRepDigit(n),
       label: "repeated digit",
     },
     {
-      value: getNextTriangle(n),
-      label: "triangle number",
+      value: getNextTriangle(n).val,
+      label: `triangle number, T(${getNextTriangle(n).n})`,
     },
     {
-      value: getNextFibonacci(n),
-      label: "fibonacci number",
+      value: getNextFibonacci(n).val,
+      label: `fibonacci number, F(${getNextFibonacci(n).n})`,
     },
     {
-      value: getNextSquareToDimension(n, 2),
-      label: "square number",
+      value: getNextSquareToDimension(n, 2).val,
+      label: `square number, ${getNextSquareToDimension(n, 2).n}^2`,
     },
     {
-      value: getNextSquareToDimension(n, 3),
-      label: "cube number",
+      value: getNextSquareToDimension(n, 3).val,
+      label: `cube number, ${getNextSquareToDimension(n, 3).n}^3`,
     },
     {
-      value: getNextSquareToDimension(n, 4),
-      label: "tessaract number",
+      value: getNextSquareToDimension(n, 4).val,
+      label: `tessaract number, ${getNextSquareToDimension(n, 4).n}^4`,
+    },
+    {
+      value: getNextXToPower(n, 2).val,
+      label: `2^${getNextXToPower(n, 2).n}`,
+    },
+    {
+      value: getNextXToPower(n, 3).val,
+      label: `3^${getNextXToPower(n, 3).n}`,
+    },
+    {
+      value: getNextXToPower(n, 5).val,
+      label: `5^${getNextXToPower(n, 5).n}`,
+    },
+    {
+      value: getNextXToPower(n, 6).val,
+      label: `6^${getNextXToPower(n, 6).n}`,
+    },
+    {
+      value: getNextXToPower(n, 7).val,
+      label: `7^${getNextXToPower(n, 7).n}`,
+    },
+    {
+      value: getNextXToPower(n, 10).val,
+      label: `10^${getNextXToPower(n, 10).n}`,
+    },
+    {
+      value: getNextXToPower(n, 11).val,
+      label: `11^${getNextXToPower(n, 11).n}`,
+    },
+    /*{
+      value: getNextXToPower(n, 12).val,
+      label: `12^${getNextXToPower(n, 12).n}`,
+    },*/
+    {
+      value: getNextXToPower(n, 13).val,
+      label: `13^${getNextXToPower(n, 13).n}`,
+    },
+    {
+      value: getNextXToPower(n, 14).val,
+      label: `14^${getNextXToPower(n, 14).n}`,
+    },
+    {
+      value: getNextXToPower(n, 15).val,
+      label: `15^${getNextXToPower(n, 15).n}`,
+    },
+    {
+      value: getNextXToPower(n, 17).val,
+      label: `17^${getNextXToPower(n, 17).n}`,
+    },
+    {
+      value: getNextXToPower(n, 18).val,
+      label: `18^${getNextXToPower(n, 18).n}`,
+    },
+    {
+      value: getNextXToPower(n, 19).val,
+      label: `19^${getNextXToPower(n, 19).n}`,
+    },
+    {
+      value: getNextXToPower(n, 21).val,
+      label: `21^${getNextXToPower(n, 21).n}`,
     },
   ];
 
@@ -395,7 +478,7 @@ function createRow(type: string, interestingValues: InterestingValueType[]) {
 
     valueDiv.textContent = value.value.toLocaleString();
     labelDiv.textContent = value.label.toString();
-    dateDiv.textContent = value.date!.toLocaleString();
+    dateDiv.textContent = myDate(value.date!);
   });
 }
 
@@ -403,7 +486,7 @@ function getNextDates(
   inputTimestamp: number,
   units: TimeConstsType,
   numbers: InterestingValueType,
-  maxDate: date,
+  maxDate: Date,
 ) {
   const dates = {};
   for (const time in units) {
@@ -440,6 +523,7 @@ function getNextDates(
         date: nextDate,
         label: "next integer",
       },
+      // @ts-ignore
       ...valuesWithDates,
     ];
   }
@@ -475,6 +559,7 @@ $("getDatesButton")!.addEventListener("click", () => {
   const units = getCheckedUnits();
   const tenYears = new Date();
   tenYears.setFullYear(tenYears.getFullYear() + 10);
+  // @ts-ignore
   const dates = getNextDates(birthdate, units, null, tenYears);
   console.log("the output", dates);
 
@@ -482,6 +567,7 @@ $("getDatesButton")!.addEventListener("click", () => {
   output.replaceChildren();
 
   for (const time in dates) {
+    // @ts-ignore
     createRow(units[time].label, dates[time]);
   }
 });
