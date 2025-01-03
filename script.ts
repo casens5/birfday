@@ -319,10 +319,6 @@ function getInterestingValues(n: number): InterestingValueType[] {
       label: "base 10",
     },
     {
-      value: getNextLucas(n).val,
-      label: `lucas number, L(${getNextLucas(n).n})`,
-    },
-    {
       value: getNextRepDigit(n),
       label: "repeated digit",
     },
@@ -407,6 +403,13 @@ function getInterestingValues(n: number): InterestingValueType[] {
       label: `21^${getNextXToPower(n, 21).n}`,
     },
   ];
+
+  if (n > 2) {
+    interestingValues.push({
+      value: getNextLucas(n).val,
+      label: `lucas number, L(${getNextLucas(n).n})`,
+    });
+  }
 
   for (const s in sequences) {
     const sequence = sequences[s];
