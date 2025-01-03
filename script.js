@@ -431,9 +431,20 @@ function getNextDates(inputTimestamp, units, numbers, maxDate) {
         const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
         const interestingValues = getInterestingValues(nextAge);
         interestingValues.sort((a, b) => a.value - b.value);
+        const vals = [nextAge];
+        const filteredVals = interestingValues.filter((interesting) => {
+            if (vals.includes(interesting.value)) {
+                return false;
+            }
+            else {
+                vals.push(interesting.value);
+                return true;
+            }
+        });
+        console.log("wawa", numbers);
         // @ts-ignore
         const valuesWithDates = [];
-        interestingValues.forEach((interestingValue) => {
+        filteredVals.forEach((interestingValue) => {
             const thisDelta = Math.round((interestingValue.value - age) * timeConsts[time].seconds);
             const thisDate = new Date(new Date().valueOf() + thisDelta * 1000);
             if (thisDate < maxDate) {
@@ -484,7 +495,6 @@ $("getDatesButton").addEventListener("click", () => {
     tenYears.setFullYear(tenYears.getFullYear() + 10);
     // @ts-ignore
     const dates = getNextDates(birthdate, units, null, tenYears);
-    console.log("the output", dates);
     // clear any previous rows
     output.replaceChildren();
     for (const time in dates) {
