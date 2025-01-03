@@ -143,16 +143,18 @@ const timeConsts = {
         label: "pluto year (sidereal orbit)",
         isChecked: false,
     },
-    planck: {
-        seconds: 5.391247 * 10 ** -44,
+    /*
+      planck: {
+        seconds: 5.391_247 * 10 ** -44,
         label: "planck seconds",
         isChecked: false,
-    },
-    cesium: {
-        seconds: 1 / 9192631770,
+      },
+      cesium: {
+        seconds: 1 / 9_192_631_770,
         label: "cesium",
         isChecked: false,
-    },
+      },
+    */
 };
 const sequences = {
     mersennePrime: {
@@ -376,12 +378,22 @@ function createCheckbox(id, label, isChecked = true) {
 }
 function createTimeOptions() {
     const drawer = $("unitDrawer");
+    const allCheckbox = createCheckbox("All", "select all", false);
+    drawer.append(allCheckbox);
     for (const time in timeConsts) {
         // @ts-ignore
         const unit = timeConsts[time];
         const input = createCheckbox(time, unit.label, unit.isChecked);
         drawer.append(input);
     }
+    allCheckbox.addEventListener("click", () => {
+        // @ts-ignore
+        const checked = $("checkboxAll").checked;
+        for (const time in timeConsts) {
+            // @ts-ignore
+            $(`checkbox${capitalize(time)}`).checked = checked;
+        }
+    });
 }
 function createRow(type, interestingValues) {
     const row = document.createElement("tr");
@@ -456,7 +468,6 @@ function getCheckedUnits() {
             checkedUnits[time] = unit;
         }
     }
-    console.log("nthnthnt", checkedUnits);
     return checkedUnits;
 }
 // *********
