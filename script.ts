@@ -133,7 +133,7 @@ const timeConsts: TimeConstsType = {
     isChecked: false,
   },
   uranusDay: {
-    seconds: 1_489_536,
+    seconds: 62_064,
     label: "uranus day (synodic rotation)",
     isChecked: false,
   },
@@ -143,17 +143,17 @@ const timeConsts: TimeConstsType = {
     isChecked: false,
   },
   neptuneDay: {
-    seconds: 1_391_904,
+    seconds: 57_996,
     label: "neptune day (synodic rotation)",
     isChecked: false,
   },
   neptuneYear: {
-    seconds: 5_198_601_600,
+    seconds: 5_200_331_155.2,
     label: "neptune year (sidereal orbit)",
     isChecked: false,
   },
   plutoDay: {
-    seconds: 13_243_564.8,
+    seconds: 551_815.2,
     label: "pluto day (synodic rotation)",
     isChecked: false,
   },
@@ -370,10 +370,10 @@ function getInterestingValues(n: number): InterestingValueType[] {
       value: getNextXToPower(n, 11).val,
       label: `11^${getNextXToPower(n, 11).n}`,
     },
-    /*{
+    {
       value: getNextXToPower(n, 12).val,
       label: `12^${getNextXToPower(n, 12).n}`,
-    },*/
+    },
     {
       value: getNextXToPower(n, 13).val,
       label: `13^${getNextXToPower(n, 13).n}`,
@@ -397,6 +397,10 @@ function getInterestingValues(n: number): InterestingValueType[] {
     {
       value: getNextXToPower(n, 19).val,
       label: `19^${getNextXToPower(n, 19).n}`,
+    },
+    {
+      value: getNextXToPower(n, 20).val,
+      label: `20^${getNextXToPower(n, 20).n}`,
     },
     {
       value: getNextXToPower(n, 21).val,
