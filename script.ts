@@ -312,6 +312,10 @@ function getNextTriangle(n: number): AnnotatedNumber {
   return { val: (base ** 2 + base) / 2, n: base };
 }
 
+/*function getNextTetration(n: number): AnnotatedNumber {
+  // should make the sequence 2, 4, 16, 65_536, etc
+}*/
+
 function getInterestingValues(n: number): InterestingValueType[] {
   const interestingValues = [
     {

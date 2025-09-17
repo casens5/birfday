@@ -254,6 +254,9 @@ function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return { val: (base ** 2 + base) / 2, n: base };
 }
+/*function getNextTetration(n: number): AnnotatedNumber {
+  // should make the sequence 2, 4, 16, 65_536, etc
+}*/
 function getInterestingValues(n) {
     const interestingValues = [
         {
