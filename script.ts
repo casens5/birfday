@@ -4,10 +4,6 @@
 // utils
 // *********
 
-function $(id: string): HTMLElement | null {
-  return document.getElementById(id);
-}
-
 function capitalize(string: string): string {
   return String(string).charAt(0).toUpperCase() + String(string).slice(1);
 }
@@ -451,7 +447,7 @@ function createCheckbox(id: string, label: string, isChecked = true) {
 }
 
 function createTimeOptions() {
-  const drawer = $("unitDrawer")!;
+  const drawer = document.getElementById("unitDrawer")!;
   const allCheckbox = createCheckbox("All", "select all", false);
   drawer.append(allCheckbox);
 
@@ -464,10 +460,9 @@ function createTimeOptions() {
 
   allCheckbox.addEventListener("click", () => {
     // @ts-ignore
-    const checked = $("checkboxAll").checked;
+    const checked = document.getElementById("checkboxAll")!.checked;
     for (const time in timeConsts) {
-      // @ts-ignore
-      $(`checkbox${capitalize(time)}`).checked = checked;
+      document.getElementById(`checkbox${capitalize(time)}`)!.checked = checked;
     }
   });
 }
@@ -486,7 +481,7 @@ function createRow(type: string, interestingValues: InterestingValueType[]) {
   numberType.rowSpan = interestingValues.length;
   row.append(numberType);
 
-  const output = $("output")!;
+  const output = document.getElementById("output")!;
   output.append(row);
 
   interestingValues.forEach((value, index) => {
@@ -534,7 +529,6 @@ function getNextDates(
         return true;
       }
     });
-    console.log("wawa", numbers);
 
     // @ts-ignore
     const valuesWithDates = [];
@@ -571,9 +565,10 @@ function getCheckedUnits() {
   for (const time in timeConsts) {
     const unit = timeConsts[time];
     // @ts-ignore
-    const isChecked = $(`checkbox${capitalize(time)}`).checked;
-    if (isChecked) {
-      // @ts-ignore
+    const checkbox = document.getElementById(
+      `checkbox${capitalize(time)}`,
+    ) as HTMLInputElement;
+    if (checkbox.checked) {
       checkedUnits[time] = unit;
     }
   }
@@ -584,7 +579,11 @@ function getCheckedUnits() {
 // event listeners
 // *********
 
-$("getDatesButton")!.addEventListener("click", () => {
+document
+  .getElementById("getDatesButton")!
+  .addEventListener("click", submitDatesCalculation);
+
+function submitDatesCalculation() {
   const output = $("output")!;
   const birthdate = Math.floor(
     // @ts-ignore
@@ -604,15 +603,17 @@ $("getDatesButton")!.addEventListener("click", () => {
     // @ts-ignore
     createRow(units[time].label, dates[time]);
   }
-});
+}
 
-$("unitLegend")!.addEventListener("click", () => {
-  const drawer = $("unitDrawer")!;
-  const upArrow = $("unitUpArrow")!;
-  const downArrow = $("unitDownArrow")!;
-  // @ts-ignore
+document
+  .getElementById("unitLegend")!
+  .addEventListener("click", toggleUnitsDrawer);
+
+function toggleUnitsDrawer() {
+  const drawer = document.getElementById("unitDrawer")!;
+  const upArrow = document.getElementById("unitUpArrow")!;
+  const downArrow = document.getElementById("unitDownArrow")!;
   drawer.value = !drawer.value;
-  // @ts-ignore
   if (drawer.value) {
     drawer.classList.remove("hidden");
     downArrow.classList.add("hidden");
@@ -622,6 +623,6 @@ $("unitLegend")!.addEventListener("click", () => {
     downArrow.classList.remove("hidden");
     upArrow.classList.add("hidden");
   }
-});
+}
 
 createTimeOptions();
