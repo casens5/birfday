@@ -1,16 +1,7 @@
 "use strict";
-// *********
-// utils
-// *********
-function $(id) {
-    return document.getElementById(id);
-}
+// utils ****
 function capitalize(string) {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
-}
-function myDate(date) {
-    // jesus christ
-    return `${String(date.getFullYear()).padStart(4, "0")} ${date.toLocaleString("en-US", { month: "long" })} ${String(date.getDate()).padStart(2, "0")}, ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
 }
 const timeConsts = {
     week: {
@@ -368,17 +359,13 @@ function getInterestingValues(n) {
             });
         }
     }
-    // @ts-ignore
     return interestingValues;
 }
-// *********
-// dom functions
-// *********
+// dom functions ****
 function createCheckbox(id, label, isChecked = true) {
     const labelElement = document.createElement("label");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    // @ts-ignore
     checkbox.checked = isChecked;
     checkbox.style.marginRight = "12px";
     checkbox.id = `checkbox${capitalize(id)}`;
@@ -386,21 +373,20 @@ function createCheckbox(id, label, isChecked = true) {
     return labelElement;
 }
 function createTimeOptions() {
-    const drawer = $("unitDrawer");
+    const drawer = document.getElementById("unitDrawer");
     const allCheckbox = createCheckbox("All", "select all", false);
     drawer.append(allCheckbox);
     for (const time in timeConsts) {
-        // @ts-ignore
         const unit = timeConsts[time];
         const input = createCheckbox(time, unit.label, unit.isChecked);
         drawer.append(input);
     }
     allCheckbox.addEventListener("click", () => {
-        // @ts-ignore
-        const checked = $("checkboxAll").checked;
+        const checkboxAll = document.getElementById("checkboxAll");
+        const isChecked = checkboxAll.checked;
         for (const time in timeConsts) {
-            // @ts-ignore
-            $(`checkbox${capitalize(time)}`).checked = checked;
+            const checkboxI = document.getElementById(`checkbox${capitalize(time)}`);
+            checkboxI.checked = isChecked;
         }
     });
 }
@@ -410,7 +396,7 @@ function createRow(type, interestingValues) {
     numberType.textContent = type;
     numberType.rowSpan = interestingValues.length;
     row.append(numberType);
-    const output = $("output");
+    const output = document.getElementById("output");
     output.append(row);
     interestingValues.forEach((value, index) => {
         const valueDiv = document.createElement("td");
@@ -426,16 +412,14 @@ function createRow(type, interestingValues) {
         }
         valueDiv.textContent = value.value.toLocaleString();
         labelDiv.textContent = value.label.toString();
-        dateDiv.textContent = myDate(value.date);
+        dateDiv.textContent = value.date;
     });
 }
 function getNextDates(inputTimestamp, units, numbers, maxDate) {
     const dates = {};
     for (const time in units) {
-        // @ts-ignore
         const age = inputTimestamp / timeConsts[time].seconds;
         const nextAge = Math.ceil(age);
-        // @ts-ignore
         const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
         const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
         const interestingValues = getInterestingValues(nextAge);
@@ -450,8 +434,6 @@ function getNextDates(inputTimestamp, units, numbers, maxDate) {
                 return true;
             }
         });
-        console.log("wawa", numbers);
-        // @ts-ignore
         const valuesWithDates = [];
         filteredVals.forEach((interestingValue) => {
             const thisDelta = Math.round((interestingValue.value - age) * timeConsts[time].seconds);
@@ -464,14 +446,12 @@ function getNextDates(inputTimestamp, units, numbers, maxDate) {
                 });
             }
         });
-        // @ts-ignore
         dates[time] = [
             {
                 value: nextAge,
                 date: nextDate,
                 label: "next integer",
             },
-            // @ts-ignore
             ...valuesWithDates,
         ];
     }
@@ -481,41 +461,40 @@ function getCheckedUnits() {
     const checkedUnits = {};
     for (const time in timeConsts) {
         const unit = timeConsts[time];
-        // @ts-ignore
-        const isChecked = $(`checkbox${capitalize(time)}`).checked;
-        if (isChecked) {
-            // @ts-ignore
+        const checkbox = document.getElementById(`checkbox${capitalize(time)}`);
+        if (checkbox.checked) {
             checkedUnits[time] = unit;
         }
     }
     return checkedUnits;
 }
-// *********
-// event listeners
-// *********
-$("getDatesButton").addEventListener("click", () => {
-    const output = $("output");
-    const birthdate = Math.floor(
-    // @ts-ignore
-    (new Date().valueOf() - new Date($("birthdateInput").value).valueOf()) /
-        1000);
+// event listeners ****
+document
+    .getElementById("getDatesButton")
+    .addEventListener("click", submitDatesCalculation);
+function submitDatesCalculation() {
+    const output = document.getElementById("output");
+    const birthdateInput = document.getElementById("birthdateInput");
+    const beginDate = Temporal.Instant.from(`${birthdateInput.value}T00Z`);
+    const now = Temporal.Now.instant();
+    const duration = now.since(beginDate);
     const units = getCheckedUnits();
-    const tenYears = new Date();
-    tenYears.setFullYear(tenYears.getFullYear() + 10);
-    // @ts-ignore
-    const dates = getNextDates(birthdate, units, null, tenYears);
+    const tenYears = Temporal.Duration.from({ years: 9 });
+    const dates = getNextDates(duration.seconds, units, null, tenYears);
     // clear any previous rows
     output.replaceChildren();
     for (const time in dates) {
-        // @ts-ignore
         createRow(units[time].label, dates[time]);
     }
-});
-$("unitLegend").addEventListener("click", () => {
-    const drawer = $("unitDrawer");
-    const upArrow = $("unitUpArrow");
-    const downArrow = $("unitDownArrow");
-    // @ts-ignore
+}
+document
+    .getElementById("unitLegend")
+    .addEventListener("click", toggleUnitsDrawer);
+function toggleUnitsDrawer() {
+    const drawer = document.getElementById("unitDrawer");
+    const upArrow = document.getElementById("unitUpArrow");
+    const downArrow = document.getElementById("unitDownArrow");
+    // @ts-ignore if it works don't fix it
     drawer.value = !drawer.value;
     // @ts-ignore
     if (drawer.value) {
@@ -528,5 +507,5 @@ $("unitLegend").addEventListener("click", () => {
         downArrow.classList.remove("hidden");
         upArrow.classList.add("hidden");
     }
-});
+}
 createTimeOptions();
