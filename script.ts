@@ -9,154 +9,127 @@ function capitalize(string: string): string {
 interface TimeConstType {
   seconds: number;
   label: string;
-  isChecked: boolean;
 }
 
 interface TimeConstsType {
   [key: string]: TimeConstType;
 }
 
+const initCheckedUnits: string[] = ["week", "day", "hour", "minute", "second"];
+
 const timeConsts: TimeConstsType = {
   week: {
     seconds: 604_800,
     label: "week",
-    isChecked: true,
   },
   day: {
     seconds: 86_400,
     label: "day",
-    isChecked: true,
   },
   hour: {
     seconds: 3_600,
     label: "hour",
-    isChecked: true,
   },
   minute: {
     seconds: 60,
     label: "minute",
-    isChecked: true,
   },
   second: {
     seconds: 1, // woah
     label: "second",
-    isChecked: true,
   },
   sunDay: {
     seconds: 2_191_832,
     label: "sun day (sidereal)",
-    isChecked: false,
   },
   moonYearSyn: {
     seconds: 2_551_442.9,
     label: "moon year (synodic orbit)",
-    isChecked: false,
   },
   moonYearSid: {
     seconds: 2_360_591.5,
     label: "moon year (sidereal orbit)",
-    isChecked: false,
   },
   mercuryDay: {
     seconds: 5_067_360,
     label: "mercury day (synodic rotation)",
-    isChecked: false,
   },
   mercuryYear: {
     seconds: 7_600_521.6,
     label: "mercury year (sidereal orbit)",
-    isChecked: false,
   },
   venusDay: {
     seconds: 242_092_800,
     label: "venus day (synodic rotation)",
-    isChecked: false,
   },
   venusYear: {
     seconds: 19_414_166.4,
     label: "venus year (sidereal orbit)",
-    isChecked: false,
   },
   marsDay: {
     seconds: 88_774.92,
     label: "mars day (synodic rotation)",
-    isChecked: false,
   },
   marsYear: {
     seconds: 59_355_072,
     label: "mars year (sidereal orbit)",
-    isChecked: false,
   },
   ceresDay: {
     seconds: 3_266.4,
     label: "ceres day (synodic rotation)",
-    isChecked: false,
   },
   ceresYear: {
     seconds: 145_164_960,
     label: "ceres year (sidereal orbit)",
-    isChecked: false,
   },
   jupiterDay: {
     seconds: 35_733.24,
     label: "jupiter day (synodic rotation)",
-    isChecked: false,
   },
   jupiterYear: {
     seconds: 374_335_689.6,
     label: "jupiter year (sidereal orbit)",
-    isChecked: false,
   },
   saturnDay: {
     seconds: 38_361.6,
     label: "saturn day (synodic rotation)",
-    isChecked: false,
   },
   saturnYear: {
     seconds: 929_596_608,
     label: "saturn year (sidereal orbit)",
-    isChecked: false,
   },
   uranusDay: {
     seconds: 62_064,
     label: "uranus day (synodic rotation)",
-    isChecked: false,
   },
   uranusYear: {
     seconds: 2_651_218_560,
     label: "uranus year (sidereal orbit)",
-    isChecked: false,
   },
   neptuneDay: {
     seconds: 57_996,
     label: "neptune day (synodic rotation)",
-    isChecked: false,
   },
   neptuneYear: {
     seconds: 5_200_331_155.2,
     label: "neptune year (sidereal orbit)",
-    isChecked: false,
   },
   plutoDay: {
     seconds: 551_815.2,
     label: "pluto day (synodic rotation)",
-    isChecked: false,
   },
   plutoYear: {
     seconds: 7_824_384_000,
     label: "pluto year (sidereal orbit)",
-    isChecked: false,
   },
   /*
     planck: {
       seconds: 5.391_247 * 10 ** -44,
       label: "planck seconds",
-      isChecked: false,
     },
     cesium: {
       seconds: 1 / 9_192_631_770,
       label: "cesium",
-      isChecked: false,
     },
   */
 };
@@ -449,11 +422,10 @@ function getInterestingValues(n: number): InterestingValueType[] {
 
 // dom functions ****
 
-function createCheckbox(id: string, label: string, isChecked = true) {
+function createCheckbox(id: string, label: string) {
   const labelElement = document.createElement("label");
   const checkbox = document.createElement("input") as HTMLInputElement;
   checkbox.type = "checkbox";
-  checkbox.checked = isChecked;
   checkbox.style.marginRight = "12px";
   checkbox.id = `checkbox${capitalize(id)}`;
   labelElement.append(checkbox, label);
@@ -462,12 +434,15 @@ function createCheckbox(id: string, label: string, isChecked = true) {
 
 function createTimeOptions() {
   const drawer = document.getElementById("unitDrawer")!;
-  const allCheckbox = createCheckbox("All", "select all", false);
+  const allCheckbox = createCheckbox("All", "select all");
   drawer.append(allCheckbox);
 
   for (const time in timeConsts) {
     const unit = timeConsts[time];
-    const input = createCheckbox(time, unit.label, unit.isChecked);
+    const input = createCheckbox(time, unit.label);
+    // @ts-ignore
+    document.getElementById(`checkbox${capitalize(time)}`)!.checked =
+      initCheckedUnits.includes(time);
     drawer.append(input);
   }
 
@@ -621,7 +596,7 @@ function toggleUnitsDrawer() {
   const drawer = document.getElementById("unitDrawer")!;
   const upArrow = document.getElementById("unitUpArrow")!;
   const downArrow = document.getElementById("unitDownArrow")!;
-  // @ts-ignore if it works don't fix it
+  // @ts-ignore if it ain't broke don't fix it
   drawer.value = !drawer.value;
   // @ts-ignore
   if (drawer.value) {
