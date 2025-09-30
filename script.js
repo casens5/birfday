@@ -3,147 +3,120 @@
 function capitalize(string) {
     return String(string).charAt(0).toUpperCase() + String(string).slice(1);
 }
+const initCheckedUnits = ["week", "day", "hour", "minute", "second"];
 const timeConsts = {
     week: {
         seconds: 604800,
         label: "week",
-        isChecked: true,
     },
     day: {
         seconds: 86400,
         label: "day",
-        isChecked: true,
     },
     hour: {
         seconds: 3600,
         label: "hour",
-        isChecked: true,
     },
     minute: {
         seconds: 60,
         label: "minute",
-        isChecked: true,
     },
     second: {
         seconds: 1,
         label: "second",
-        isChecked: true,
     },
     sunDay: {
         seconds: 2191832,
         label: "sun day (sidereal)",
-        isChecked: false,
     },
     moonYearSyn: {
         seconds: 2551442.9,
         label: "moon year (synodic orbit)",
-        isChecked: false,
     },
     moonYearSid: {
         seconds: 2360591.5,
         label: "moon year (sidereal orbit)",
-        isChecked: false,
     },
     mercuryDay: {
         seconds: 5067360,
         label: "mercury day (synodic rotation)",
-        isChecked: false,
     },
     mercuryYear: {
         seconds: 7600521.6,
         label: "mercury year (sidereal orbit)",
-        isChecked: false,
     },
     venusDay: {
         seconds: 242092800,
         label: "venus day (synodic rotation)",
-        isChecked: false,
     },
     venusYear: {
         seconds: 19414166.4,
         label: "venus year (sidereal orbit)",
-        isChecked: false,
     },
     marsDay: {
         seconds: 88774.92,
         label: "mars day (synodic rotation)",
-        isChecked: false,
     },
     marsYear: {
         seconds: 59355072,
         label: "mars year (sidereal orbit)",
-        isChecked: false,
     },
     ceresDay: {
         seconds: 3266.4,
         label: "ceres day (synodic rotation)",
-        isChecked: false,
     },
     ceresYear: {
         seconds: 145164960,
         label: "ceres year (sidereal orbit)",
-        isChecked: false,
     },
     jupiterDay: {
         seconds: 35733.24,
         label: "jupiter day (synodic rotation)",
-        isChecked: false,
     },
     jupiterYear: {
         seconds: 374335689.6,
         label: "jupiter year (sidereal orbit)",
-        isChecked: false,
     },
     saturnDay: {
         seconds: 38361.6,
         label: "saturn day (synodic rotation)",
-        isChecked: false,
     },
     saturnYear: {
         seconds: 929596608,
         label: "saturn year (sidereal orbit)",
-        isChecked: false,
     },
     uranusDay: {
         seconds: 62064,
         label: "uranus day (synodic rotation)",
-        isChecked: false,
     },
     uranusYear: {
         seconds: 2651218560,
         label: "uranus year (sidereal orbit)",
-        isChecked: false,
     },
     neptuneDay: {
         seconds: 57996,
         label: "neptune day (synodic rotation)",
-        isChecked: false,
     },
     neptuneYear: {
         seconds: 5200331155.2,
         label: "neptune year (sidereal orbit)",
-        isChecked: false,
     },
     plutoDay: {
         seconds: 551815.2,
         label: "pluto day (synodic rotation)",
-        isChecked: false,
     },
     plutoYear: {
         seconds: 7824384000,
         label: "pluto year (sidereal orbit)",
-        isChecked: false,
     },
     /*
       planck: {
         seconds: 5.391_247 * 10 ** -44,
         label: "planck seconds",
-        isChecked: false,
       },
       cesium: {
         seconds: 1 / 9_192_631_770,
         label: "cesium",
-        isChecked: false,
       },
     */
 };
@@ -169,32 +142,57 @@ const sequences = {
 sequences.perfect.numbers = sequences.mersennePrime.numbers.map((x) => x * ((x + 1) / 2));
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
+function getNextBase10(n) {
+    if (n < 0) {
+        return {
+            value: 0,
+            index: 0,
+        };
+    }
+    const digits = Math.floor(Math.log(n) / Math.log(10));
+    if (digits < 1) {
+        return {
+            value: n,
+            index: n,
+        };
+    }
+    return {
+        value: Math.ceil(n / 10 ** digits) * 10 ** digits,
+        index: 1,
+    };
+}
 function getNextRepDigit(n) {
     const initialDigit = parseInt(n.toString().slice(0, 1));
     const numLength = Math.floor(Math.log(n) / Math.log(10)) + 1;
     const repDigit = parseInt(new Array(numLength).fill(initialDigit).join(""));
     if (repDigit >= n) {
-        return repDigit;
+        return {
+            value: repDigit,
+            index: 1,
+        };
     }
     else {
-        return parseInt(new Array(numLength).fill(initialDigit + 1).join(""));
+        return {
+            value: parseInt(new Array(numLength).fill(initialDigit + 1).join("")),
+            index: 1,
+        };
     }
 }
 function getNextXToPower(n, power) {
     return {
-        val: power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
-        n: Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
+        value: power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
+        index: Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
     };
 }
 function getNextSquareToDimension(n, dimension) {
     return {
-        val: Math.ceil(n ** (1 / dimension)) ** dimension,
-        n: Math.ceil(n ** (1 / dimension)),
+        value: Math.ceil(n ** (1 / dimension)) ** dimension,
+        index: Math.ceil(n ** (1 / dimension)),
     };
 }
 function getNextFibonacci(n) {
     if (n === 0) {
-        return { val: -1, n: -1 };
+        return { value: 0, index: 0 };
     }
     const phi = (1 + 5 ** (1 / 2)) / 2;
     let base = 1 + Math.floor(Math.log(n) / Math.log(phi));
@@ -204,27 +202,17 @@ function getNextFibonacci(n) {
     // why be a good mathematician anyway?
     for (let i = 0; i < 10; i++) {
         if (binet(base) >= n) {
-            return { val: binet(base), n: base };
+            return { value: binet(base), index: base };
         }
         base += 1;
     }
     // should never happen >:(
-    return { val: -1, n: -1 };
-}
-function getNextBase10(n) {
-    if (n < 0) {
-        return n;
-    }
-    const digits = Math.floor(Math.log(n) / Math.log(10));
-    if (digits < 1) {
-        return n;
-    }
-    return Math.ceil(n / 10 ** digits) * 10 ** digits;
+    return { value: 0, index: 0 };
 }
 function getNextLucas(n) {
     // ONLY WORKS FOR N > 3
     if (n < 3) {
-        return { val: -1, n: -1 };
+        return { value: -1, index: -1 };
     }
     const phi = (1 + 5 ** (1 / 2)) / 2;
     let base = Math.round(Math.log(n) / Math.log(phi));
@@ -234,16 +222,27 @@ function getNextLucas(n) {
     // why be a good mathematician anyway?
     for (let i = 0; i < 10; i++) {
         if (luca(base) >= n) {
-            return { val: luca(base), n: base };
+            return { value: luca(base), index: base };
         }
         base += 1;
     }
     // should never happen
-    return { val: -1, n: -1 };
+    return { value: 0, index: 0 };
+}
+function getNextTriSquare(n) {
+    let i = 0;
+    let nums = [0];
+    while (nums[i] < n) {
+        i++;
+        nums.push(Math.round(((3 + 2 * (2 ** 0.5) ** i - (3 - 2 * (2 ** 0.5) ** i)) /
+            (4 * 2 ** 0.5)) **
+            2));
+    }
+    return { value: nums[i - 1], index: i - 1 };
 }
 function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
-    return { val: (base ** 2 + base) / 2, n: base };
+    return { value: (base ** 2 + base) / 2, index: base };
 }
 /*function getNextTetration(n: number): AnnotatedNumber {
   // should make the sequence 2, 4, 16, 65_536, etc
@@ -251,102 +250,102 @@ function getNextTriangle(n) {
 function getInterestingValues(n) {
     const interestingValues = [
         {
-            value: getNextBase10(n),
+            value: getNextBase10(n).value,
             label: "base 10",
         },
         {
-            value: getNextRepDigit(n),
+            value: getNextRepDigit(n).value,
             label: "repeated digit",
         },
         {
-            value: getNextTriangle(n).val,
-            label: `triangle number, T(${getNextTriangle(n).n})`,
+            value: getNextTriangle(n).value,
+            label: `triangle number, T(${getNextTriangle(n).index})`,
         },
         {
-            value: getNextFibonacci(n).val,
-            label: `fibonacci number, F(${getNextFibonacci(n).n})`,
+            value: getNextFibonacci(n).value,
+            label: `fibonacci number, F(${getNextFibonacci(n).index})`,
         },
         {
-            value: getNextSquareToDimension(n, 2).val,
-            label: `square number, ${getNextSquareToDimension(n, 2).n}^2`,
+            value: getNextSquareToDimension(n, 2).value,
+            label: `square number, ${getNextSquareToDimension(n, 2).index}^2`,
         },
         {
-            value: getNextSquareToDimension(n, 3).val,
-            label: `cube number, ${getNextSquareToDimension(n, 3).n}^3`,
+            value: getNextSquareToDimension(n, 3).value,
+            label: `cube number, ${getNextSquareToDimension(n, 3).index}^3`,
         },
         {
-            value: getNextSquareToDimension(n, 4).val,
-            label: `tessaract number, ${getNextSquareToDimension(n, 4).n}^4`,
+            value: getNextSquareToDimension(n, 4).value,
+            label: `tessaract number, ${getNextSquareToDimension(n, 4).index}^4`,
         },
         {
-            value: getNextXToPower(n, 2).val,
-            label: `2^${getNextXToPower(n, 2).n}`,
+            value: getNextXToPower(n, 2).value,
+            label: `2^${getNextXToPower(n, 2).index}`,
         },
         {
-            value: getNextXToPower(n, 3).val,
-            label: `3^${getNextXToPower(n, 3).n}`,
+            value: getNextXToPower(n, 3).value,
+            label: `3^${getNextXToPower(n, 3).index}`,
         },
         {
-            value: getNextXToPower(n, 5).val,
-            label: `5^${getNextXToPower(n, 5).n}`,
+            value: getNextXToPower(n, 5).value,
+            label: `5^${getNextXToPower(n, 5).index}`,
         },
         {
-            value: getNextXToPower(n, 6).val,
-            label: `6^${getNextXToPower(n, 6).n}`,
+            value: getNextXToPower(n, 6).value,
+            label: `6^${getNextXToPower(n, 6).index}`,
         },
         {
-            value: getNextXToPower(n, 7).val,
-            label: `7^${getNextXToPower(n, 7).n}`,
+            value: getNextXToPower(n, 7).value,
+            label: `7^${getNextXToPower(n, 7).index}`,
         },
         {
-            value: getNextXToPower(n, 10).val,
-            label: `10^${getNextXToPower(n, 10).n}`,
+            value: getNextXToPower(n, 10).value,
+            label: `10^${getNextXToPower(n, 10).index}`,
         },
         {
-            value: getNextXToPower(n, 11).val,
-            label: `11^${getNextXToPower(n, 11).n}`,
+            value: getNextXToPower(n, 11).value,
+            label: `11^${getNextXToPower(n, 11).index}`,
         },
         {
-            value: getNextXToPower(n, 12).val,
-            label: `12^${getNextXToPower(n, 12).n}`,
+            value: getNextXToPower(n, 12).value,
+            label: `12^${getNextXToPower(n, 12).index}`,
         },
         {
-            value: getNextXToPower(n, 13).val,
-            label: `13^${getNextXToPower(n, 13).n}`,
+            value: getNextXToPower(n, 13).value,
+            label: `13^${getNextXToPower(n, 13).index}`,
         },
         {
-            value: getNextXToPower(n, 14).val,
-            label: `14^${getNextXToPower(n, 14).n}`,
+            value: getNextXToPower(n, 14).value,
+            label: `14^${getNextXToPower(n, 14).index}`,
         },
         {
-            value: getNextXToPower(n, 15).val,
-            label: `15^${getNextXToPower(n, 15).n}`,
+            value: getNextXToPower(n, 15).value,
+            label: `15^${getNextXToPower(n, 15).index}`,
         },
         {
-            value: getNextXToPower(n, 17).val,
-            label: `17^${getNextXToPower(n, 17).n}`,
+            value: getNextXToPower(n, 17).value,
+            label: `17^${getNextXToPower(n, 17).index}`,
         },
         {
-            value: getNextXToPower(n, 18).val,
-            label: `18^${getNextXToPower(n, 18).n}`,
+            value: getNextXToPower(n, 18).value,
+            label: `18^${getNextXToPower(n, 18).index}`,
         },
         {
-            value: getNextXToPower(n, 19).val,
-            label: `19^${getNextXToPower(n, 19).n}`,
+            value: getNextXToPower(n, 19).value,
+            label: `19^${getNextXToPower(n, 19).index}`,
         },
         {
-            value: getNextXToPower(n, 20).val,
-            label: `20^${getNextXToPower(n, 20).n}`,
+            value: getNextXToPower(n, 20).value,
+            label: `20^${getNextXToPower(n, 20).index}`,
         },
         {
-            value: getNextXToPower(n, 21).val,
-            label: `21^${getNextXToPower(n, 21).n}`,
+            value: getNextXToPower(n, 21).value,
+            label: `21^${getNextXToPower(n, 21).index}`,
         },
     ];
     if (n > 2) {
         interestingValues.push({
-            value: getNextLucas(n).val,
-            label: `lucas number, L(${getNextLucas(n).n})`,
+            value: getNextLucas(n).value,
+            label: `lucas number, L(${getNextLucas(n).index})`,
         });
     }
     for (const s in sequences) {
@@ -362,11 +361,10 @@ function getInterestingValues(n) {
     return interestingValues;
 }
 // dom functions ****
-function createCheckbox(id, label, isChecked = true) {
+function createCheckbox(id, label) {
     const labelElement = document.createElement("label");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.checked = isChecked;
     checkbox.style.marginRight = "12px";
     checkbox.id = `checkbox${capitalize(id)}`;
     labelElement.append(checkbox, label);
@@ -374,11 +372,14 @@ function createCheckbox(id, label, isChecked = true) {
 }
 function createTimeOptions() {
     const drawer = document.getElementById("unitDrawer");
-    const allCheckbox = createCheckbox("All", "select all", false);
+    const allCheckbox = createCheckbox("All", "select all");
     drawer.append(allCheckbox);
     for (const time in timeConsts) {
         const unit = timeConsts[time];
-        const input = createCheckbox(time, unit.label, unit.isChecked);
+        const input = createCheckbox(time, unit.label);
+        // @ts-ignore
+        document.getElementById(`checkbox${capitalize(time)}`).checked =
+            initCheckedUnits.includes(time);
         drawer.append(input);
     }
     allCheckbox.addEventListener("click", () => {
@@ -412,16 +413,17 @@ function createRow(type, interestingValues) {
         }
         valueDiv.textContent = value.value.toLocaleString();
         labelDiv.textContent = value.label.toString();
-        dateDiv.textContent = value.date;
+        dateDiv.textContent = value.date.toString();
     });
 }
-function getNextDates(inputTimestamp, units, numbers, maxDate) {
+function getNextDates(duration, units, numbers, maxDate) {
     const dates = {};
     for (const time in units) {
-        const age = inputTimestamp / timeConsts[time].seconds;
+        const age = duration / timeConsts[time].seconds;
         const nextAge = Math.ceil(age);
         const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
-        const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+        const nextDuration = Temporal.Duration.from({ seconds: timeDelta });
+        const nextDate = Temporal.Now.instant().add(nextDuration);
         const interestingValues = getInterestingValues(nextAge);
         interestingValues.sort((a, b) => a.value - b.value);
         const vals = [nextAge];
@@ -436,12 +438,14 @@ function getNextDates(inputTimestamp, units, numbers, maxDate) {
         });
         const valuesWithDates = [];
         filteredVals.forEach((interestingValue) => {
-            const thisDelta = Math.round((interestingValue.value - age) * timeConsts[time].seconds);
-            const thisDate = new Date(new Date().valueOf() + thisDelta * 1000);
+            const thisDuration = Temporal.Duration.from({
+                seconds: Math.round((interestingValue.value - age) * timeConsts[time].seconds),
+            });
+            const thisDate = Temporal.Now.instant().add(thisDuration);
             if (thisDate < maxDate) {
                 valuesWithDates.push({
                     value: interestingValue.value,
-                    date: new Date(new Date().valueOf() + thisDelta * 1000),
+                    date: thisDate,
                     label: interestingValue.label,
                 });
             }
@@ -479,8 +483,9 @@ function submitDatesCalculation() {
     const now = Temporal.Now.instant();
     const duration = now.since(beginDate);
     const units = getCheckedUnits();
-    const tenYears = Temporal.Duration.from({ years: 9 });
-    const dates = getNextDates(duration.seconds, units, null, tenYears);
+    const tenYears = Temporal.Duration.from({ years: 10 });
+    const maxDate = Temporal.Now.instant().add(tenYears);
+    const dates = getNextDates(duration.seconds, units, null, maxDate);
     // clear any previous rows
     output.replaceChildren();
     for (const time in dates) {
@@ -494,7 +499,7 @@ function toggleUnitsDrawer() {
     const drawer = document.getElementById("unitDrawer");
     const upArrow = document.getElementById("unitUpArrow");
     const downArrow = document.getElementById("unitDownArrow");
-    // @ts-ignore if it works don't fix it
+    // @ts-ignore if it ain't broke don't fix it
     drawer.value = !drawer.value;
     // @ts-ignore
     if (drawer.value) {

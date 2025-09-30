@@ -462,7 +462,7 @@ function createTimeOptions() {
 
 interface InterestingValueType {
   value: number;
-  date?: Date;
+  date?: Temporal.ZonedDateTime;
   label: string;
 }
 
@@ -491,22 +491,23 @@ function createRow(type: string, interestingValues: InterestingValueType[]) {
 
     valueDiv.textContent = value.value.toLocaleString();
     labelDiv.textContent = value.label.toString();
-    dateDiv.textContent = value.date;
+    dateDiv.textContent = value.date!.toString();
   });
 }
 
 function getNextDates(
-  inputTimestamp: number,
+  duration: number,
   units: TimeConstsType,
-  numbers: InterestingValueType,
-  maxDate: Temporal.Duration,
+  numbers: InterestingValueType[],
+  maxDate: Temporal.Instant,
 ) {
   const dates = {};
   for (const time in units) {
-    const age = inputTimestamp / timeConsts[time].seconds;
+    const age = duration / timeConsts[time].seconds;
     const nextAge = Math.ceil(age);
     const timeDelta = Math.round((nextAge - age) * timeConsts[time].seconds);
-    const nextDate = new Date(new Date().valueOf() + timeDelta * 1000);
+    const nextDuration = Temporal.Duration.from({ seconds: timeDelta });
+    const nextDate = Temporal.Now.instant().add(nextDuration);
 
     const interestingValues = getInterestingValues(nextAge);
     interestingValues.sort((a, b) => a.value - b.value);
@@ -521,16 +522,18 @@ function getNextDates(
       }
     });
 
-    const valuesWithDates = [];
+    const valuesWithDates: InterestingValueType[] = [];
     filteredVals.forEach((interestingValue) => {
-      const thisDelta = Math.round(
-        (interestingValue.value - age) * timeConsts[time].seconds,
-      );
-      const thisDate = new Date(new Date().valueOf() + thisDelta * 1000);
+      const thisDuration = Temporal.Duration.from({
+        seconds: Math.round(
+          (interestingValue.value - age) * timeConsts[time].seconds,
+        ),
+      });
+      const thisDate = Temporal.Now.instant().add(thisDuration);
       if (thisDate < maxDate) {
         valuesWithDates.push({
           value: interestingValue.value,
-          date: new Date(new Date().valueOf() + thisDelta * 1000),
+          date: thisDate,
           label: interestingValue.label,
         });
       }
@@ -574,11 +577,12 @@ function submitDatesCalculation() {
     "birthdateInput",
   ) as HTMLInputElement;
   const beginDate = Temporal.Instant.from(`${birthdateInput.value}T00Z`);
-  const now = Temporal.Now.instant()
+  const now = Temporal.Now.instant();
   const duration = now.since(beginDate);
   const units = getCheckedUnits();
-  const tenYears = Temporal.Duration.from({ years: 9 });
-  const dates = getNextDates(duration.seconds, units, null, tenYears);
+  const tenYears = Temporal.Duration.from({ years: 10 });
+  const maxDate = Temporal.Now.instant().add(tenYears);
+  const dates = getNextDates(duration.seconds, units, null, maxDate);
 
   // clear any previous rows
   output.replaceChildren();
