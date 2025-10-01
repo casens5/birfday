@@ -440,9 +440,8 @@ function createTimeOptions() {
   for (const time in timeConsts) {
     const unit = timeConsts[time];
     const input = createCheckbox(time, unit.label);
-    // @ts-ignore
-    document.getElementById(`checkbox${capitalize(time)}`)!.checked =
-      initCheckedUnits.includes(time);
+    const checkbox = input.children[0] as HTMLInputElement;
+    checkbox.checked = initCheckedUnits.includes(time);
     drawer.append(input);
   }
 
