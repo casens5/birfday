@@ -156,38 +156,47 @@ function getNextBase10(n) {
             index: n,
         };
     }
+    const firstDigit = Math.ceil(n / 10 ** digits);
     return {
-        value: Math.ceil(n / 10 ** digits) * 10 ** digits,
-        index: 1,
+        value: firstDigit * 10 ** digits,
+        index: -1 + firstDigit + 10 * digits,
     };
 }
 function getNextRepDigit(n) {
+    if (n < 1) {
+        return {
+            value: 0,
+            index: 0,
+        };
+    }
     const initialDigit = parseInt(n.toString().slice(0, 1));
     const numLength = Math.floor(Math.log(n) / Math.log(10)) + 1;
     const repDigit = parseInt(new Array(numLength).fill(initialDigit).join(""));
     if (repDigit >= n) {
         return {
             value: repDigit,
-            index: 1,
+            index: initialDigit + 9 * (numLength - 1),
         };
     }
     else {
         return {
             value: parseInt(new Array(numLength).fill(initialDigit + 1).join("")),
-            index: 1,
+            index: 1 + initialDigit + 9 * (numLength - 1),
         };
     }
 }
 function getNextXToPower(n, power) {
+    const index = Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5)));
     return {
-        value: power ** Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
-        index: Math.ceil(Number((Math.log(n) / Math.log(power)).toFixed(5))),
+        value: power ** index,
+        index: index,
     };
 }
 function getNextSquareToDimension(n, dimension) {
+    const index = Math.ceil(n ** (1 / dimension));
     return {
-        value: Math.ceil(n ** (1 / dimension)) ** dimension,
-        index: Math.ceil(n ** (1 / dimension)),
+        value: index ** dimension,
+        index: index,
     };
 }
 function getNextFibonacci(n) {
@@ -199,10 +208,13 @@ function getNextFibonacci(n) {
     function binet(n) {
         return Math.round((phi ** n - (1 - phi) ** n) / 5 ** (1 / 2));
     }
+    function est(n) {
+        return Math.floor(Math.log(n) / Math.log(phi));
+    }
     // why be a good mathematician anyway?
     for (let i = 0; i < 10; i++) {
         if (binet(base) >= n) {
-            return { value: binet(base), index: base };
+            return { value: binet(base), index: base - 1 };
         }
         base += 1;
     }
@@ -343,18 +355,21 @@ function getInterestingValues(n) {
         },
     ];
     if (n > 2) {
+        const lucas = getNextLucas(n);
         interestingValues.push({
-            value: getNextLucas(n).value,
-            label: `lucas number, L(${getNextLucas(n).index})`,
+            value: lucas.value,
+            label: `lucas number, L(${lucas.index})`,
+            index: lucas.index,
         });
     }
     for (const s in sequences) {
         const sequence = sequences[s];
-        const nextValue = sequence.numbers.find((number) => number >= n);
-        if (nextValue != null) {
+        const index = sequence.numbers.findIndex((number) => number >= n);
+        if (index != -1) {
             interestingValues.push({
-                value: nextValue,
+                value: sequence.numbers[index],
                 label: sequence.label,
+                index: index,
             });
         }
     }
@@ -377,9 +392,8 @@ function createTimeOptions() {
     for (const time in timeConsts) {
         const unit = timeConsts[time];
         const input = createCheckbox(time, unit.label);
-        // @ts-ignore
-        document.getElementById(`checkbox${capitalize(time)}`).checked =
-            initCheckedUnits.includes(time);
+        const checkbox = input.children[0];
+        checkbox.checked = initCheckedUnits.includes(time);
         drawer.append(input);
     }
     allCheckbox.addEventListener("click", () => {
@@ -417,7 +431,7 @@ function createRow(type, interestingValues) {
     });
 }
 function getNextDates(duration, units, numbers, maxDate) {
-    const dates = {};
+    const dates = [];
     for (const time in units) {
         const age = duration / timeConsts[time].seconds;
         const nextAge = Math.ceil(age);
@@ -436,28 +450,24 @@ function getNextDates(duration, units, numbers, maxDate) {
                 return true;
             }
         });
-        const valuesWithDates = [];
+        dates.push({
+            value: nextAge,
+            date: nextDate,
+            label: "next integer",
+        });
         filteredVals.forEach((interestingValue) => {
             const thisDuration = Temporal.Duration.from({
                 seconds: Math.round((interestingValue.value - age) * timeConsts[time].seconds),
             });
             const thisDate = Temporal.Now.instant().add(thisDuration);
             if (thisDate < maxDate) {
-                valuesWithDates.push({
+                dates.push({
                     value: interestingValue.value,
                     date: thisDate,
                     label: interestingValue.label,
                 });
             }
         });
-        dates[time] = [
-            {
-                value: nextAge,
-                date: nextDate,
-                label: "next integer",
-            },
-            ...valuesWithDates,
-        ];
     }
     return dates;
 }
@@ -485,12 +495,12 @@ function submitDatesCalculation() {
     const units = getCheckedUnits();
     const tenYears = Temporal.Duration.from({ years: 10 });
     const maxDate = Temporal.Now.instant().add(tenYears);
-    const dates = getNextDates(duration.seconds, units, null, maxDate);
+    const dates = getNextDates(duration.seconds, units, [], maxDate);
     // clear any previous rows
     output.replaceChildren();
-    for (const time in dates) {
-        createRow(units[time].label, dates[time]);
-    }
+    //dates.forEach((date) => {
+    //  createRow(units[time].label, dates[time]);
+    //});
 }
 document
     .getElementById("unitLegend")
