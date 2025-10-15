@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": " ",
   "scripts": {
-    "watch:ts": "tsc --watch",
-    "watch:css": "tailwindcss -i ./main.css -o ./output.css --watch",
-    "watch": "npm-run-all --parallel watch:*"
+    "watch": "tsc --watch"
   },
   "author": {
     "name": "rudolf ordoyne",
@@ -14,9 +12,6 @@
   "license": "GPL-3.0",
   "description": "your age in other units",
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "tailwindcss": "^3.4.14",
     "temporal-polyfill": "^0.3.0",
     "typescript": "^4.9.5"
   }

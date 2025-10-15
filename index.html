@@ -4,37 +4,25 @@
     <title>birthdays</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="./output.css" rel="stylesheet" />
+    <link href="./main.css" rel="stylesheet" />
   </head>
 
-  <body class="h-full min-h-screen bg-stone-900">
-    <div class="flex h-full flex-col items-center gap-4 text-stone-100">
-      <label class="mt-4 flex flex-col items-center justify-center gap-2">
+  <body>
+    <div class="content">
+      <label id="birthdateLabel">
         birthday:
-        <input
-          type="date"
-          class="border border-stone-700 bg-stone-900 text-stone-100"
-          id="birthdateInput"
-        />
+        <input type="date" id="birthdateInput" />
       </label>
-      <fieldset id="unitControl" class="mt-4">
-        <legend id="unitLegend" class="flex flex-row justify-center gap-2">
+      <fieldset id="unitControl">
+        <legend id="unitLegend">
           units:
           <span id="unitUpArrow" class="hidden">▲</span>
           <span id="unitDownArrow">▼</span>
         </legend>
-        <div
-          id="unitDrawer"
-          class="flex hidden flex-col justify-center gap-2"
-        ></div>
+        <div id="unitDrawer" class="hidden"></div>
       </fieldset>
-      <button
-        id="getDatesButton"
-        class="w-fit rounded bg-blue-950 p-2 hover:bg-blue-900"
-      >
-        submit
-      </button>
-      <table>
+      <button id="getDatesButton">submit</button>
+      <table class="hidden">
         <thead>
           <th>time unit</th>
           <th>age</th>
@@ -48,3 +36,4 @@
     <script type="module" src="script.js"></script>
   </body>
 </html>
+
