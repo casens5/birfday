@@ -203,3 +203,9 @@ fieldset {
 .hidden {
   display: none;
 }
+
+@media (width > 500px) {
+  .content {
+    margin: 16px;
+  }
+}
