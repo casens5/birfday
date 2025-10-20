@@ -33,7 +33,7 @@ sequences.perfect.numbers = sequences.mersennePrime.numbers.map(
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
 
-interface AnnotatedNumber {
+export interface AnnotatedNumber {
   value: number;
   description: string;
   index: number;

@@ -1,6 +1,34 @@
 import { capitalize } from "./utils.js";
 import { timeConsts } from "./timeConsts.js";
-import { sequences, getNextLucas, } from "./math.js";
+import { sequences, getNextBase10, getNextRepDigit, getNextXToPower, getNextSquareToDimension, getNextLucas, getNextFibonacci, getNextTriangle, getNextSquareTriangle, } from "./math.js";
+const initInterestingNums = [
+    getNextBase10,
+    getNextRepDigit,
+    [getNextXToPower, 2],
+    [getNextXToPower, 3],
+    [getNextXToPower, 4],
+    [getNextXToPower, 5],
+    [getNextXToPower, 6],
+    [getNextXToPower, 7],
+    [getNextXToPower, 8],
+    [getNextXToPower, 9],
+    [getNextXToPower, 10],
+    [getNextXToPower, 11],
+    [getNextXToPower, 12],
+    [getNextXToPower, 13],
+    [getNextXToPower, 14],
+    [getNextXToPower, 15],
+    [getNextXToPower, 16],
+    [getNextXToPower, 17],
+    [getNextXToPower, 18],
+    [getNextXToPower, 19],
+    [getNextSquareToDimension, 2],
+    [getNextSquareToDimension, 3],
+    [getNextSquareToDimension, 4],
+    getNextFibonacci,
+    getNextTriangle,
+    getNextSquareTriangle,
+];
 const initCheckedUnits = ["week", "day", "hour", "minute", "second"];
 function getInterestingValues(n) {
     const interestingValues = [];
@@ -19,7 +47,14 @@ function getInterestingValues(n) {
             });
         }
     }
-    return interestingValues;
+    const results = initInterestingNums.map((entry) => {
+        if (Array.isArray(entry)) {
+            const [func, arg] = entry;
+            return func(n, arg);
+        }
+        return entry(n);
+    });
+    return interestingValues.concat(results);
 }
 function createRow(type, interestingValues) {
     const row = document.createElement("tr");
