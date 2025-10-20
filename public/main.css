@@ -159,6 +159,12 @@ fieldset {
   border-width: 0px;
 }
 
+#noscript {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
 #unitDrawer {
   display: flex;
   flex-direction: column;
@@ -197,11 +203,11 @@ fieldset {
   flex-direction: column;
   height: 100%;
   gap: 16px;
-  align-items: conter;
+  align-items: center;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 @media (width > 500px) {
