@@ -4,6 +4,13 @@ import { sequences, getNextLucas } from "./math.js";
 
 const initCheckedUnits: string[] = ["week", "day", "hour", "minute", "second"];
 
+interface InterestingValueType {
+  value: number;
+  date?: Temporal.ZonedDateTime;
+  description: string;
+  index: number;
+}
+
 function getInterestingValues(n: number): InterestingValueType[] {
   const interestingValues = [];
 
@@ -25,52 +32,6 @@ function getInterestingValues(n: number): InterestingValueType[] {
   }
 
   return interestingValues;
-}
-
-console.log("fart", capitalize("baba"));
-
-function createCheckbox(id: string, label: string) {
-  const labelElement = document.createElement("label");
-  const checkbox = document.createElement("input") as HTMLInputElement;
-  checkbox.type = "checkbox";
-  checkbox.style.marginRight = "12px";
-  checkbox.id = `checkbox${capitalize(id)}`;
-  labelElement.append(checkbox, label);
-  return labelElement;
-}
-
-function createTimeOptions() {
-  const drawer = document.getElementById("unitDrawer")!;
-  const allCheckbox = createCheckbox("All", "select all");
-  drawer.append(allCheckbox);
-
-  for (const time in timeConsts) {
-    const unit = timeConsts[time];
-    const input = createCheckbox(time, unit.label);
-    const checkbox = input.children[0] as HTMLInputElement;
-    checkbox.checked = initCheckedUnits.includes(time);
-    drawer.append(input);
-  }
-
-  allCheckbox.addEventListener("click", () => {
-    const checkboxAll = document.getElementById(
-      "checkboxAll",
-    ) as HTMLInputElement;
-    const isChecked = checkboxAll.checked;
-    for (const time in timeConsts) {
-      const checkboxI = document.getElementById(
-        `checkbox${capitalize(time)}`,
-      ) as HTMLInputElement;
-      checkboxI.checked = isChecked;
-    }
-  });
-}
-
-interface InterestingValueType {
-  value: number;
-  date?: Temporal.ZonedDateTime;
-  description: string;
-  index: number;
 }
 
 function createRow(type: string, interestingValues: InterestingValueType[]) {
@@ -168,7 +129,42 @@ function getCheckedUnits() {
   return checkedUnits;
 }
 
-// event listeners ****
+function createCheckbox(id: string, label: string) {
+  const labelElement = document.createElement("label");
+  const checkbox = document.createElement("input") as HTMLInputElement;
+  checkbox.type = "checkbox";
+  checkbox.style.marginRight = "12px";
+  checkbox.id = `checkbox${capitalize(id)}`;
+  labelElement.append(checkbox, label);
+  return labelElement;
+}
+
+function createTimeOptions() {
+  const drawer = document.getElementById("unitDrawer")!;
+  const allCheckboxContainer = createCheckbox("All", "select all");
+  drawer.append(allCheckboxContainer);
+
+  for (const time in timeConsts) {
+    const unit = timeConsts[time];
+    const checkboxContainer = createCheckbox(time, unit.label);
+    const checkbox = checkboxContainer.children[0] as HTMLInputElement;
+    checkbox.checked = initCheckedUnits.includes(time);
+    drawer.append(checkboxContainer);
+  }
+
+  allCheckboxContainer.addEventListener("click", () => {
+    const allCheckbox = document.getElementById(
+      "checkboxAll",
+    ) as HTMLInputElement;
+    const isChecked = allCheckbox.checked;
+    for (const time in timeConsts) {
+      const checkboxI = document.getElementById(
+        `checkbox${capitalize(time)}`,
+      ) as HTMLInputElement;
+      checkboxI.checked = isChecked;
+    }
+  });
+}
 
 document
   .getElementById("getDatesButton")!
