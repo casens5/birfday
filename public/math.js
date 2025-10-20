@@ -142,22 +142,6 @@ export function getNextLucas(n) {
     // should never happen
     return { value: 0, description: "Lucas Number, L(0)", index: 0 };
 }
-export function getNextTriSquare(n) {
-    // this is garbage?
-    let i = 0;
-    let nums = [0];
-    while (nums[i] < n) {
-        i++;
-        nums.push(Math.round(((3 + 2 * (2 ** 0.5) ** i - (3 - 2 * (2 ** 0.5) ** i)) /
-            (4 * 2 ** 0.5)) **
-            2));
-    }
-    return {
-        value: nums[i],
-        description: "triangular square number",
-        index: i,
-    };
-}
 export function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return {
