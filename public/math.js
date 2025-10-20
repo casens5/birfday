@@ -142,7 +142,7 @@ export function getNextLucas(n) {
     // should never happen
     return { value: 0, description: "Lucas Number, L(0)", index: 0 };
 }
-function getNextTriSquare(n) {
+export function getNextTriSquare(n) {
     // this is garbage?
     let i = 0;
     let nums = [0];
@@ -158,22 +158,26 @@ function getNextTriSquare(n) {
         index: i,
     };
 }
-function getNextSquareTriangle(n) {
-    // (1 + 2 + 3 + ... + n) ** 2 = 1**3 + 2**3 + 3**3 + ... + n**3
-    // F(1) = 1, F(2) = 9
-    // 1, 9, 36, 100, 225, 441, etc.
-    return {
-        value: 1,
-        description: `baba`,
-        index: 1,
-    };
-}
 export function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return {
         value: (base ** 2 + base) / 2,
-        description: `triangular number, T(${base}`,
+        description: `triangular number, T(${base})`,
         index: base,
+    };
+}
+export function getNextSquareTriangle(n) {
+    // (1 + 2 + 3 + ... + n) ** 2 = 1**3 + 2**3 + 3**3 + ... + n**3
+    // F(1) = 1, F(2) = 9
+    // 1, 9, 36, 100, 225, 441, etc.
+    const root = Math.ceil(n ** 0.5);
+    const triangle = getNextTriangle(root);
+    const index = triangle.index;
+    const value = triangle.value ** 2;
+    return {
+        value: value,
+        description: `square of triangle number, T(${index})^2`,
+        index: index,
     };
 }
 /*export function getNextTetration(n: number): AnnotatedNumber {

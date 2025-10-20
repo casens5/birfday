@@ -1,13 +1,24 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <title>birthdays</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./src/main.css" rel="stylesheet" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/temporal-polyfill@0.3.0/global.min.js"
+      defer
+    ></script>
+    <script type="module" src="./build/utils.js" defer></script>
+    <script type="module" src="./build/timeConsts.js" defer></script>
+    <script type="module" src="./build/math.js" defer></script>
+    <script type="module" src="./build/main.js" defer></script>
   </head>
 
   <body>
+    <noscript>
+      <strong>Please enable JavaScript to view this page.</strong>
+    </noscript>
     <div class="content">
       <label id="birthdateLabel">
         birthday:
@@ -32,11 +43,5 @@
         <tbody id="output"></tbody>
       </table>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/temporal-polyfill@0.3.0/global.min.js"></script>
-    <script type="module" src="./build/utils.js"></script>
-    <script type="module" src="./build/timeConsts.js"></script>
-    <script type="module" src="./build/math.js"></script>
-    <script type="module" src="./build/main.js"></script>
   </body>
 </html>
-
