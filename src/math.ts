@@ -17,8 +17,17 @@ export const sequences: SequencesType = {
     description: "perfect number",
   },
   taxicab: {
-    numbers: [1729],
+    numbers: [
+      1729, 4104, 13832, 20683, 32832, 39312, 40033, 46683, 64232, 65728,
+      110656, 110808, 134379, 149389, 165464, 171288, 195841, 216027, 216125,
+      262656, 314496, 320264, 327763, 373464, 402597, 439101, 443889, 513000,
+      513856, 515375, 525824, 558441, 593047, 684019, 704977,
+    ],
     description: "taxicab number",
+  },
+  hardyRam: {
+    numbers: [2, 1_729, 87_539_319, 6_963_472_309_248],
+    description: "hardy-ramanujan number",
   },
   lehmer: {
     numbers: [276, 552, 564, 660, 966],
