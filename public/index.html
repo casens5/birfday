@@ -22,10 +22,28 @@
           Please enable JavaScript to view this page.
         </strong>
       </noscript>
-        <label id="birthdateLabel">
+      <fieldset id="dateInput">
+        <label>
           birthday:
           <input type="date" id="birthdateInput" />
         </label>
+        <label>
+          time:
+          <input type="time" id="birthTimeInput" value="00:00" />
+        </label>
+        <label>
+          time zone:
+          <select id="timeZones">
+            <option value="browser">(browser)</option>
+            <option value="utc">UTC</option>
+            <option value="(other)">(other)</option>
+          </select>
+        </label>
+        <label id="timeZonesExtendedLabel" class="hidden">
+          other time zones:
+          <select id="timeZonesExtended"></select>
+        </label>
+      </fieldset>
       <fieldset id="unitControl">
         <legend id="unitLegend">
           units:

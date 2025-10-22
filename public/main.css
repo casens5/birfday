@@ -182,14 +182,15 @@ fieldset {
   margin-top: 16px;
 }
 
-#birthdateInput {
+input,
+select {
   background: oklch(0.216 0.006 56.043);
   color: oklch(0.97 0.001 106.424);
   border-color: oklch(0.374 0.01 67.558);
   border-width: 1px;
 }
 
-#birthdateLabel {
+#dateInput {
   display: flex;
   flex-direction: column;
   align-items: center;

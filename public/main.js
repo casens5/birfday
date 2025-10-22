@@ -30,6 +30,7 @@ const initInterestingNums = [
     getNextSquareTriangle,
 ];
 const initCheckedUnits = ["week", "day", "hour", "minute", "second"];
+// checked
 function getInterestingValues(n) {
     const interestingValues = [];
     if (n > 2) {
@@ -172,6 +173,7 @@ document
 function submitDatesCalculation() {
     const output = document.getElementById("output");
     const birthdateInput = document.getElementById("birthdateInput");
+    const birthTimeInput = document.getElementById("birthTimeInput");
     const beginDate = Temporal.Instant.from(`${birthdateInput.value}T00Z`);
     const now = Temporal.Now.instant();
     const duration = now.since(beginDate);
@@ -185,6 +187,19 @@ function submitDatesCalculation() {
     //dates.forEach((date) => {
     //  createRow(units[time].label, dates[time]);
     //});
+}
+// checked
+document
+    .getElementById("timeZones")
+    .addEventListener("change", revealExtendedTimeZones);
+// checked
+function revealExtendedTimeZones() {
+    const timeZones = document.getElementById("timeZones");
+    const inputLabel = document.getElementById("timeZonesExtendedLabel");
+    inputLabel.classList.remove("hidden");
+    if (timeZones.value !== "(other)") {
+        inputLabel.classList.add("hidden");
+    }
 }
 // checked
 document
