@@ -20,6 +20,20 @@ function populateUsersTimeZone() {
   userOption.value = zone;
 }
 
+export function getTimeZone() {
+  const timeZoneSelectMain = document.getElementById(
+    "timeZones",
+  ) as HTMLSelectElement;
+  const timeZoneSelectExtended = document.getElementById(
+    "timeZonesExtended",
+  ) as HTMLSelectElement;
+  if (timeZoneSelectMain.value === "(other)") {
+    return timeZoneSelectExtended.value;
+  } else {
+    return timeZoneSelectMain.value;
+  }
+}
+
 document
   .getElementById("timeZones")!
   .addEventListener("change", revealExtendedTimeZones);

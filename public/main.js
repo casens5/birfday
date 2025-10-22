@@ -1,5 +1,6 @@
 import { getInterestingValues } from "./math.js";
 import { timeConsts } from "./timeConsts.js";
+import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
 function createRow(type, interestingValues) {
     const row = document.createElement("tr");
@@ -28,7 +29,6 @@ function createRow(type, interestingValues) {
 }
 function getNextDates(duration, units, numbers, maxDate) {
     const dates = [];
-    console.log("baba", numbers);
     for (const time in units) {
         const age = duration / timeConsts[time].seconds;
         const nextAge = Math.ceil(age);
@@ -72,17 +72,19 @@ document
     .getElementById("getDatesButton")
     .addEventListener("click", submitDatesCalculation);
 function submitDatesCalculation() {
-    const output = document.getElementById("output");
     const birthdateInput = document.getElementById("birthdateInput");
     const birthTimeInput = document.getElementById("birthTimeInput");
-    const beginDate = Temporal.Instant.from(`${birthdateInput.value}T00Z`);
+    const timeZone = getTimeZone();
+    const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZone}]`;
+    const startDate = Temporal.ZonedDateTime.from(birthdateString);
     const now = Temporal.Now.instant();
-    const duration = now.since(beginDate);
+    const duration = now.since(startDate.toInstant());
+    const nowISO = now.toZonedDateTimeISO("utc");
+    const maxDate = nowISO.add({ years: 10 });
     const units = getCheckedUnits();
-    const tenYears = Temporal.Duration.from({ years: 10 });
-    const maxDate = Temporal.Now.instant().add(tenYears);
     const dates = getNextDates(duration.seconds, units, [], maxDate);
-    console.log("hi", dates);
+    console.log("wowo", startDate, now, duration, units, maxDate, dates);
+    const output = document.getElementById("output");
     // clear any previous rows
     output.replaceChildren();
     //dates.forEach((date) => {

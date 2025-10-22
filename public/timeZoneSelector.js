@@ -1,4 +1,3 @@
-"use strict";
 function populateExtendedTimeZones() {
     const zones = Intl.supportedValuesOf("timeZone");
     const selector = document.getElementById("timeZonesExtended");
@@ -14,6 +13,16 @@ function populateUsersTimeZone() {
     const userOption = document.getElementById("userTimeZone");
     userOption.textContent = zone;
     userOption.value = zone;
+}
+export function getTimeZone() {
+    const timeZoneSelectMain = document.getElementById("timeZones");
+    const timeZoneSelectExtended = document.getElementById("timeZonesExtended");
+    if (timeZoneSelectMain.value === "(other)") {
+        return timeZoneSelectExtended.value;
+    }
+    else {
+        return timeZoneSelectMain.value;
+    }
 }
 document
     .getElementById("timeZones")

@@ -1,5 +1,6 @@
 import { getInterestingValues, InterestingValueType } from "./math.js";
 import { timeConsts, TimeConstsType } from "./timeConsts.js";
+import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
 
 function createRow(type: string, interestingValues: InterestingValueType[]) {
@@ -88,19 +89,26 @@ document
   .addEventListener("click", submitDatesCalculation);
 
 function submitDatesCalculation() {
-  const output = document.getElementById("output")!;
   const birthdateInput = document.getElementById(
     "birthdateInput",
   ) as HTMLInputElement;
-  const beginDate = Temporal.Instant.from(`${birthdateInput.value}T00Z`);
+  const birthTimeInput = document.getElementById(
+    "birthTimeInput",
+  ) as HTMLInputElement;
+  const timeZone = getTimeZone();
+
+  const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZone}]`;
+  const startDate = Temporal.ZonedDateTime.from(birthdateString);
+
   const now = Temporal.Now.instant();
-  const duration = now.since(beginDate);
+  const duration = now.since(startDate.toInstant());
   const units = getCheckedUnits();
   const tenYears = Temporal.Duration.from({ years: 10 });
   const maxDate = Temporal.Now.instant().add(tenYears);
   const dates = getNextDates(duration.seconds, units, [], maxDate);
   console.log("hi", dates);
 
+  const output = document.getElementById("output")!;
   // clear any previous rows
   output.replaceChildren();
 

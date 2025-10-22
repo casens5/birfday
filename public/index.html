@@ -27,11 +27,17 @@
       <fieldset id="dateInput">
         <label>
           birthday:
-          <input type="date" id="birthdateInput" />
+          <input
+            type="date"
+            id="birthdateInput"
+            required
+            aria-required="true"
+          />
         </label>
         <label>
           time:
-          <input type="time" id="birthTimeInput" value="00:00" />
+          <!-- step="1" allows users to enter seconds -->
+          <input type="time" id="birthTimeInput" value="00:00:00" step="1" />
         </label>
         <label>
           time zone:
