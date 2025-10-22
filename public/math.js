@@ -1,4 +1,32 @@
-export const sequences = {
+const initInterestingNums = [
+    getNextBase10,
+    getNextRepDigit,
+    [getNextXToPower, 2],
+    [getNextXToPower, 3],
+    [getNextXToPower, 4],
+    [getNextXToPower, 5],
+    [getNextXToPower, 6],
+    [getNextXToPower, 7],
+    [getNextXToPower, 8],
+    [getNextXToPower, 9],
+    [getNextXToPower, 10],
+    [getNextXToPower, 11],
+    [getNextXToPower, 12],
+    [getNextXToPower, 13],
+    [getNextXToPower, 14],
+    [getNextXToPower, 15],
+    [getNextXToPower, 16],
+    [getNextXToPower, 17],
+    [getNextXToPower, 18],
+    [getNextXToPower, 19],
+    [getNextSquareToDimension, 2],
+    [getNextSquareToDimension, 3],
+    [getNextSquareToDimension, 4],
+    getNextFibonacci,
+    getNextTriangle,
+    getNextSquareTriangle,
+];
+const sequences = {
     mersennePrime: {
         numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
         description: "mersenne prime",
@@ -29,7 +57,7 @@ export const sequences = {
 sequences.perfect.numbers = sequences.mersennePrime.numbers.map((x) => x * ((x + 1) / 2));
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
-export function getNextBase10(n) {
+function getNextBase10(n) {
     // numbers that end in 0s in base 10
     // eg. 5, 8, 20, 400, 7000, etc.
     if (n < 0) {
@@ -54,7 +82,7 @@ export function getNextBase10(n) {
         index: -1 + firstDigit + 10 * digits,
     };
 }
-export function getNextRepDigit(n) {
+function getNextRepDigit(n) {
     // numbers with repeated digits in base 10
     // eg. 2, 6, 33, 777, 11111, etc.
     if (n < 1) {
@@ -82,7 +110,7 @@ export function getNextRepDigit(n) {
         };
     }
 }
-export function getNextXToPower(n, base) {
+function getNextXToPower(n, base) {
     // finds `k` for base ** k >= n
     const index = Math.ceil(Number((Math.log(n) / Math.log(base)).toFixed(5)));
     return {
@@ -91,7 +119,7 @@ export function getNextXToPower(n, base) {
         index: index,
     };
 }
-export function getNextSquareToDimension(n, dimension) {
+function getNextSquareToDimension(n, dimension) {
     // finds `k` for k ** dimension >= n
     const index = Math.ceil(n ** (1 / dimension));
     return {
@@ -100,7 +128,7 @@ export function getNextSquareToDimension(n, dimension) {
         index: index,
     };
 }
-export function getNextFibonacci(n) {
+function getNextFibonacci(n) {
     // fibonacci numbers, f(1) = 1, f(2) = 2
     // 1, 2, 3, 5, 8, 13, ...
     if (n === 0) {
@@ -125,7 +153,7 @@ export function getNextFibonacci(n) {
     // should never happen >:(
     return { value: 0, description: "Fibonacci number, f(0)", index: 0 };
 }
-export function getNextLucas(n) {
+function getNextLucas(n) {
     // lucas numbers, L(1) = 2, L(2) = 1, L(3) = 3
     // 2, 1, 3, 4, 7, 11, 18, etc.
     // ONLY WORKS FOR N > 3
@@ -151,7 +179,7 @@ export function getNextLucas(n) {
     // should never happen
     return { value: 0, description: "Lucas Number, L(0)", index: 0 };
 }
-export function getNextTriangle(n) {
+function getNextTriangle(n) {
     const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
     return {
         value: (base ** 2 + base) / 2,
@@ -159,7 +187,7 @@ export function getNextTriangle(n) {
         index: base,
     };
 }
-export function getNextSquareTriangle(n) {
+function getNextSquareTriangle(n) {
     // (1 + 2 + 3 + ... + n) ** 2 = 1**3 + 2**3 + 3**3 + ... + n**3
     // F(1) = 1, F(2) = 9
     // 1, 9, 36, 100, 225, 441, etc.
@@ -173,6 +201,29 @@ export function getNextSquareTriangle(n) {
         index: index,
     };
 }
-/*export function getNextTetration(n: number): AnnotatedNumber {
-  // should make the sequence 2, 4, 16, 65_536, etc
-}*/
+export function getInterestingValues(n) {
+    const interestingValues = [];
+    if (n > 2) {
+        const lucas = getNextLucas(n);
+        interestingValues.push(lucas);
+    }
+    for (const s in sequences) {
+        const sequence = sequences[s];
+        const index = sequence.numbers.findIndex((number) => number >= n);
+        if (index != -1) {
+            interestingValues.push({
+                value: sequence.numbers[index],
+                description: sequence.description,
+                index: index,
+            });
+        }
+    }
+    const results = initInterestingNums.map((entry) => {
+        if (Array.isArray(entry)) {
+            const [func, arg] = entry;
+            return func(n, arg);
+        }
+        return entry(n);
+    });
+    return interestingValues.concat(results);
+}

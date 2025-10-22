@@ -1,62 +1,6 @@
-import { capitalize } from "./utils.js";
+import { getInterestingValues } from "./math.js";
 import { timeConsts } from "./timeConsts.js";
-import { sequences, getNextBase10, getNextRepDigit, getNextXToPower, getNextSquareToDimension, getNextLucas, getNextFibonacci, getNextTriangle, getNextSquareTriangle, } from "./math.js";
-const initInterestingNums = [
-    getNextBase10,
-    getNextRepDigit,
-    [getNextXToPower, 2],
-    [getNextXToPower, 3],
-    [getNextXToPower, 4],
-    [getNextXToPower, 5],
-    [getNextXToPower, 6],
-    [getNextXToPower, 7],
-    [getNextXToPower, 8],
-    [getNextXToPower, 9],
-    [getNextXToPower, 10],
-    [getNextXToPower, 11],
-    [getNextXToPower, 12],
-    [getNextXToPower, 13],
-    [getNextXToPower, 14],
-    [getNextXToPower, 15],
-    [getNextXToPower, 16],
-    [getNextXToPower, 17],
-    [getNextXToPower, 18],
-    [getNextXToPower, 19],
-    [getNextSquareToDimension, 2],
-    [getNextSquareToDimension, 3],
-    [getNextSquareToDimension, 4],
-    getNextFibonacci,
-    getNextTriangle,
-    getNextSquareTriangle,
-];
-const initCheckedUnits = ["week", "day", "hour", "minute", "second"];
-// checked
-function getInterestingValues(n) {
-    const interestingValues = [];
-    if (n > 2) {
-        const lucas = getNextLucas(n);
-        interestingValues.push(lucas);
-    }
-    for (const s in sequences) {
-        const sequence = sequences[s];
-        const index = sequence.numbers.findIndex((number) => number >= n);
-        if (index != -1) {
-            interestingValues.push({
-                value: sequence.numbers[index],
-                description: sequence.description,
-                index: index,
-            });
-        }
-    }
-    const results = initInterestingNums.map((entry) => {
-        if (Array.isArray(entry)) {
-            const [func, arg] = entry;
-            return func(n, arg);
-        }
-        return entry(n);
-    });
-    return interestingValues.concat(results);
-}
+import { getCheckedUnits } from "./unitSelector.js";
 function createRow(type, interestingValues) {
     const row = document.createElement("tr");
     const numberType = document.createElement("th");
@@ -124,49 +68,6 @@ function getNextDates(duration, units, numbers, maxDate) {
     }
     return dates;
 }
-// checked
-function getCheckedUnits() {
-    const checkedUnits = {};
-    for (const time in timeConsts) {
-        const unit = timeConsts[time];
-        const checkbox = document.getElementById(`checkbox${capitalize(time)}`);
-        if (checkbox.checked) {
-            checkedUnits[time] = unit;
-        }
-    }
-    return checkedUnits;
-}
-// checked
-function createCheckbox(id, label) {
-    const labelElement = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.style.marginRight = "12px";
-    checkbox.id = `checkbox${capitalize(id)}`;
-    labelElement.append(checkbox, label);
-    return labelElement;
-}
-// checked (no pun tended)
-function createTimeOptions() {
-    const drawer = document.getElementById("unitDrawer");
-    const allCheckboxContainer = createCheckbox("All", "select all");
-    drawer.append(allCheckboxContainer);
-    for (const time in timeConsts) {
-        const unit = timeConsts[time];
-        const checkboxContainer = createCheckbox(time, unit.label);
-        const checkbox = checkboxContainer.children[0];
-        checkbox.checked = initCheckedUnits.includes(time);
-        drawer.append(checkboxContainer);
-    }
-    allCheckboxContainer.addEventListener("click", () => {
-        const allCheckbox = document.getElementById("checkboxAll");
-        const isChecked = allCheckbox.checked;
-        for (const time in timeConsts) {
-            const checkboxI = document.getElementById(`checkbox${capitalize(time)}`);
-            checkboxI.checked = isChecked;
-        }
-    });
-}
 document
     .getElementById("getDatesButton")
     .addEventListener("click", submitDatesCalculation);
@@ -188,5 +89,3 @@ function submitDatesCalculation() {
     //  createRow(units[time].label, dates[time]);
     //});
 }
-//checked
-createTimeOptions();

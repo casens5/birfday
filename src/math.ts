@@ -1,3 +1,36 @@
+type NumberGetter =
+  | ((n: number) => AnnotatedNumber)
+  | [(n: number, m: number) => AnnotatedNumber, number];
+
+const initInterestingNums: NumberGetter[] = [
+  getNextBase10,
+  getNextRepDigit,
+  [getNextXToPower, 2],
+  [getNextXToPower, 3],
+  [getNextXToPower, 4],
+  [getNextXToPower, 5],
+  [getNextXToPower, 6],
+  [getNextXToPower, 7],
+  [getNextXToPower, 8],
+  [getNextXToPower, 9],
+  [getNextXToPower, 10],
+  [getNextXToPower, 11],
+  [getNextXToPower, 12],
+  [getNextXToPower, 13],
+  [getNextXToPower, 14],
+  [getNextXToPower, 15],
+  [getNextXToPower, 16],
+  [getNextXToPower, 17],
+  [getNextXToPower, 18],
+  [getNextXToPower, 19],
+  [getNextSquareToDimension, 2],
+  [getNextSquareToDimension, 3],
+  [getNextSquareToDimension, 4],
+  getNextFibonacci,
+  getNextTriangle,
+  getNextSquareTriangle,
+];
+
 interface SequenceType {
   numbers: number[];
   description: string;
@@ -7,7 +40,7 @@ interface SequencesType {
   [key: string]: SequenceType;
 }
 
-export const sequences: SequencesType = {
+const sequences: SequencesType = {
   mersennePrime: {
     numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
     description: "mersenne prime",
@@ -42,13 +75,13 @@ sequences.perfect.numbers = sequences.mersennePrime.numbers.map(
 // the last mersenne produces a perfect number larger than default integer size
 sequences.perfect.numbers.pop();
 
-export interface AnnotatedNumber {
+interface AnnotatedNumber {
   value: number;
   description: string;
   index: number;
 }
 
-export function getNextBase10(n: number): AnnotatedNumber {
+function getNextBase10(n: number): AnnotatedNumber {
   // numbers that end in 0s in base 10
   // eg. 5, 8, 20, 400, 7000, etc.
   if (n < 0) {
@@ -74,7 +107,7 @@ export function getNextBase10(n: number): AnnotatedNumber {
   };
 }
 
-export function getNextRepDigit(n: number): AnnotatedNumber {
+function getNextRepDigit(n: number): AnnotatedNumber {
   // numbers with repeated digits in base 10
   // eg. 2, 6, 33, 777, 11111, etc.
   if (n < 1) {
@@ -102,7 +135,7 @@ export function getNextRepDigit(n: number): AnnotatedNumber {
   }
 }
 
-export function getNextXToPower(n: number, base: number): AnnotatedNumber {
+function getNextXToPower(n: number, base: number): AnnotatedNumber {
   // finds `k` for base ** k >= n
   const index = Math.ceil(Number((Math.log(n) / Math.log(base)).toFixed(5)));
   return {
@@ -112,7 +145,7 @@ export function getNextXToPower(n: number, base: number): AnnotatedNumber {
   };
 }
 
-export function getNextSquareToDimension(
+function getNextSquareToDimension(
   n: number,
   dimension: number,
 ): AnnotatedNumber {
@@ -125,7 +158,7 @@ export function getNextSquareToDimension(
   };
 }
 
-export function getNextFibonacci(n: number): AnnotatedNumber {
+function getNextFibonacci(n: number): AnnotatedNumber {
   // fibonacci numbers, f(1) = 1, f(2) = 2
   // 1, 2, 3, 5, 8, 13, ...
   if (n === 0) {
@@ -152,7 +185,7 @@ export function getNextFibonacci(n: number): AnnotatedNumber {
   return { value: 0, description: "Fibonacci number, f(0)", index: 0 };
 }
 
-export function getNextLucas(n: number): AnnotatedNumber {
+function getNextLucas(n: number): AnnotatedNumber {
   // lucas numbers, L(1) = 2, L(2) = 1, L(3) = 3
   // 2, 1, 3, 4, 7, 11, 18, etc.
 
@@ -182,7 +215,7 @@ export function getNextLucas(n: number): AnnotatedNumber {
   return { value: 0, description: "Lucas Number, L(0)", index: 0 };
 }
 
-export function getNextTriangle(n: number): AnnotatedNumber {
+function getNextTriangle(n: number): AnnotatedNumber {
   const base = Math.ceil((-1 + (1 + 8 * n) ** (1 / 2)) / 2);
   return {
     value: (base ** 2 + base) / 2,
@@ -191,7 +224,7 @@ export function getNextTriangle(n: number): AnnotatedNumber {
   };
 }
 
-export function getNextSquareTriangle(n: number): AnnotatedNumber {
+function getNextSquareTriangle(n: number): AnnotatedNumber {
   // (1 + 2 + 3 + ... + n) ** 2 = 1**3 + 2**3 + 3**3 + ... + n**3
   // F(1) = 1, F(2) = 9
   // 1, 9, 36, 100, 225, 441, etc.
@@ -208,6 +241,44 @@ export function getNextSquareTriangle(n: number): AnnotatedNumber {
   };
 }
 
-/*export function getNextTetration(n: number): AnnotatedNumber {
+/*function getNextTetration(n: number): AnnotatedNumber {
   // should make the sequence 2, 4, 16, 65_536, etc
 }*/
+
+export interface InterestingValueType {
+  value: number;
+  date?: Temporal.ZonedDateTime;
+  description: string;
+  index: number;
+}
+
+export function getInterestingValues(n: number): InterestingValueType[] {
+  const interestingValues = [];
+
+  if (n > 2) {
+    const lucas = getNextLucas(n);
+    interestingValues.push(lucas);
+  }
+
+  for (const s in sequences) {
+    const sequence = sequences[s];
+    const index = sequence.numbers.findIndex((number: number) => number >= n);
+    if (index != -1) {
+      interestingValues.push({
+        value: sequence.numbers[index],
+        description: sequence.description,
+        index: index,
+      });
+    }
+  }
+
+  const results = initInterestingNums.map((entry) => {
+    if (Array.isArray(entry)) {
+      const [func, arg] = entry;
+      return func(n, arg);
+    }
+    return entry(n);
+  });
+
+  return interestingValues.concat(results);
+}
