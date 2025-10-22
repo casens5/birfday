@@ -218,19 +218,6 @@ function createTimeOptions() {
   });
 }
 
-function populateExtendedTimeZones() {
-  const zones = Intl.supportedValuesOf("timeZone");
-  const selector = document.getElementById(
-    "timeZonesExtended",
-  ) as HTMLSelectElement;
-  zones.forEach((zone) => {
-    const option = document.createElement("option");
-    option.textContent = zone;
-    option.value = zone;
-    selector.append(option);
-  });
-}
-
 document
   .getElementById("getDatesButton")!
   .addEventListener("click", submitDatesCalculation);
@@ -258,4 +245,3 @@ function submitDatesCalculation() {
 }
 
 createTimeOptions();
-populateExtendedTimeZones();

@@ -167,17 +167,6 @@ function createTimeOptions() {
         }
     });
 }
-// checked
-function populateExtendedTimeZones() {
-    const zones = Intl.supportedValuesOf("timeZone");
-    const selector = document.getElementById("timeZonesExtended");
-    zones.forEach((zone) => {
-        const option = document.createElement("option");
-        option.textContent = zone;
-        option.value = zone;
-        selector.append(option);
-    });
-}
 document
     .getElementById("getDatesButton")
     .addEventListener("click", submitDatesCalculation);
@@ -199,5 +188,5 @@ function submitDatesCalculation() {
     //  createRow(units[time].label, dates[time]);
     //});
 }
+//checked
 createTimeOptions();
-populateExtendedTimeZones();

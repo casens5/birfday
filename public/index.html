@@ -13,7 +13,7 @@
     <script type="module" src="./timeConsts.js" defer></script>
     <script type="module" src="./math.js" defer></script>
     <script type="module" src="./unitSelector.js" defer></script>
-    <script type="module" src="./timeZoneRevealer.js" defer></script>
+    <script type="module" src="./timeZoneSelector.js" defer></script>
     <script type="module" src="./main.js" defer></script>
   </head>
 
@@ -36,7 +36,7 @@
         <label>
           time zone:
           <select id="timeZones">
-            <option value="browser">(browser)</option>
+            <option id="userTimeZone" value="(browser)">(browser)</option>
             <option value="utc">UTC</option>
             <option value="(other)">(other)</option>
           </select>
