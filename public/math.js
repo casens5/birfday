@@ -17,7 +17,7 @@ export const sequences = {
         description: "taxicab number",
     },
     hardyRam: {
-        numbers: [2, 1729, 87539319, 6963472309248],
+        numbers: [2, 1_729, 87_539_319, 6_963_472_309_248],
         description: "hardy-ramanujan number",
     },
     lehmer: {
