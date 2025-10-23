@@ -189,8 +189,8 @@ function getNextLucas(n: number): AnnotatedNumber {
   // lucas numbers, L(1) = 2, L(2) = 1, L(3) = 3
   // 2, 1, 3, 4, 7, 11, 18, etc.
 
-  // ONLY WORKS FOR N > 3
-  if (n <= 3) {
+  // ONLY WORKS FOR N >= 3
+  if (n < 3) {
     return { value: -1, description: "Lucas Number, L(-1)", index: -1 };
   }
 
@@ -245,17 +245,16 @@ function getNextSquareTriangle(n: number): AnnotatedNumber {
   // should make the sequence 2, 4, 16, 65_536, etc
 }*/
 
-export interface InterestingValueType {
+export interface InterestingNumberType {
   value: number;
-  date?: Temporal.ZonedDateTime;
   description: string;
   index: number;
 }
 
-export function getInterestingValues(n: number): InterestingValueType[] {
+export function getInterestingValues(n: number): InterestingNumberType[] {
   const interestingValues = [];
 
-  if (n > 2) {
+  if (n >= 3) {
     const lucas = getNextLucas(n);
     interestingValues.push(lucas);
   }

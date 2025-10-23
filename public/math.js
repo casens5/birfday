@@ -156,8 +156,8 @@ function getNextFibonacci(n) {
 function getNextLucas(n) {
     // lucas numbers, L(1) = 2, L(2) = 1, L(3) = 3
     // 2, 1, 3, 4, 7, 11, 18, etc.
-    // ONLY WORKS FOR N > 3
-    if (n <= 3) {
+    // ONLY WORKS FOR N >= 3
+    if (n < 3) {
         return { value: -1, description: "Lucas Number, L(-1)", index: -1 };
     }
     const phi = (1 + 5 ** (1 / 2)) / 2;
@@ -203,7 +203,7 @@ function getNextSquareTriangle(n) {
 }
 export function getInterestingValues(n) {
     const interestingValues = [];
-    if (n > 2) {
+    if (n >= 3) {
         const lucas = getNextLucas(n);
         interestingValues.push(lucas);
     }
