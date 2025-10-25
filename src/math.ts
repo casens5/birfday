@@ -240,6 +240,9 @@ const initInterestingNums: NumberGetter[] = [
   getNextSquareTriangle,
 ];
 
+function numberCoolness(number: InterestingNumberType): number {
+  return Math.max(0.5, Math.log(number.value)) / Math.min(number.index, 0.5);
+}
 
 export function getInterestingNumbers(n: number): InterestingNumberType[] {
   const interestingNumbers: InterestingNumberType[] = [];
@@ -268,5 +271,23 @@ export function getInterestingNumbers(n: number): InterestingNumberType[] {
     return entry(n);
   });
 
-  return interestingValues.concat(results);
+  const allResults = interestingNumbers.concat(results);
+
+  // coolness filtering should happen later?  duplication trimming in another function?
+  const noDuplicates: InterestingNumberType[] = [];
+  allResults.forEach((interestingNumber) => {
+    const duplicateIndex = noDuplicates.findIndex(
+      (item) => item.value === interestingNumber.value,
+    );
+    if (duplicateIndex === -1) {
+      noDuplicates.push(interestingNumber);
+    } else {
+      const oldNumber = noDuplicates[duplicateIndex];
+      if (numberCoolness(oldNumber) < numberCoolness(interestingNumber)) {
+        noDuplicates[duplicateIndex] = interestingNumber;
+      }
+    }
+  });
+
+  return noDuplicates;
 }
