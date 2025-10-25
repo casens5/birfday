@@ -1,5 +1,5 @@
 import { getInterestingNumbers, InterestingNumberType } from "./math.js";
-import { timeConsts, TimeConstsType } from "./timeConsts.js";
+import { TimeConstType } from "./timeConsts.js";
 import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
 
@@ -27,22 +27,22 @@ function createRow(dateRow: DateRow): HTMLTableRowElement {
 
 function getNextDates(
   duration: Temporal.Duration,
-  units: TimeConstsType,
+  units: TimeConstType[],
   //numbers: InterestingNumberType[],
   maxDate: Temporal.ZonedDateTime,
 ) {
   const dates: DateRow[] = [];
-  for (const time in units) {
+  units.forEach((unit) => {
     // overly complex implementation of % which handles floats as moduluses
     const secondsRemaining = Math.ceil(
-      (duration.seconds / timeConsts[time].seconds -
-        Math.floor(duration.seconds / timeConsts[time].seconds)) *
-        timeConsts[time].seconds,
+      (duration.seconds / unit.seconds -
+        Math.floor(duration.seconds / unit.seconds)) *
+        unit.seconds,
     );
     const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
     const nextDate = Temporal.Now.zonedDateTimeISO("utc").add(nextDuration);
 
-    const nextAge = Math.ceil(duration.seconds / timeConsts[time].seconds);
+    const nextAge = Math.ceil(duration.seconds / unit.seconds);
     const interestingNumbers = getInterestingNumbers(nextAge);
     interestingNumbers.sort((a, b) => a.value - b.value);
 
@@ -50,14 +50,14 @@ function getNextDates(
       value: nextAge,
       date: nextDate,
       description: "next integer",
-      timeUnit: units[time].label,
+      timeUnit: unit.label,
       index: nextAge,
     });
 
     interestingNumbers.forEach((interestingNumber) => {
       const thisDuration = Temporal.Duration.from({
         seconds: Math.round(
-          interestingNumber.value * timeConsts[time].seconds - duration.seconds,
+          interestingNumber.value * unit.seconds - duration.seconds,
         ),
       });
       const thisDate = Temporal.Now.zonedDateTimeISO("utc").add(thisDuration);
@@ -67,12 +67,12 @@ function getNextDates(
           value: interestingNumber.value,
           date: thisDate,
           description: interestingNumber.description,
-          timeUnit: units[time].label,
+          timeUnit: unit.label,
           index: interestingNumber.index,
         });
       }
     });
-  }
+  });
 
   return dates;
 }

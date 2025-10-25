@@ -1,56 +1,54 @@
-import { timeConsts, TimeConstsType } from "./timeConsts.js";
+import { timeConsts, TimeConstType } from "./timeConsts.js";
 import { capitalize } from "./utils.js";
 
 const initCheckedUnits: string[] = ["week", "day", "hour", "minute", "second"];
 
-function createCheckbox(id: string, label: string) {
+function createCheckbox(key: string, label: string) {
   const labelElement = document.createElement("label");
   const checkbox = document.createElement("input") as HTMLInputElement;
   checkbox.type = "checkbox";
   checkbox.style.marginRight = "12px";
-  checkbox.id = `checkbox${capitalize(id)}`;
+  checkbox.id = `checkbox${capitalize(key)}`;
   labelElement.append(checkbox, label);
   return labelElement;
 }
 
 function createTimeOptions() {
   const drawer = document.getElementById("unitDrawer")!;
-  const allCheckboxContainer = createCheckbox("All", "select all");
+  const allCheckboxContainer = createCheckbox("all", "select all");
   drawer.append(allCheckboxContainer);
 
-  for (const time in timeConsts) {
-    const unit = timeConsts[time];
-    const checkboxContainer = createCheckbox(time, unit.label);
+  timeConsts.forEach((unit) => {
+    const checkboxContainer = createCheckbox(unit.key, unit.label);
     const checkbox = checkboxContainer.children[0] as HTMLInputElement;
-    checkbox.checked = initCheckedUnits.includes(time);
+    checkbox.checked = initCheckedUnits.includes(unit.key);
     drawer.append(checkboxContainer);
-  }
+  });
 
   allCheckboxContainer.addEventListener("click", () => {
     const allCheckbox = document.getElementById(
       "checkboxAll",
     ) as HTMLInputElement;
     const isChecked = allCheckbox.checked;
-    for (const time in timeConsts) {
+    timeConsts.forEach((unit) => {
       const checkboxI = document.getElementById(
-        `checkbox${capitalize(time)}`,
+        `checkbox${capitalize(unit.key)}`,
       ) as HTMLInputElement;
       checkboxI.checked = isChecked;
-    }
+    });
   });
 }
 
 export function getCheckedUnits() {
-  const checkedUnits: TimeConstsType = {};
-  for (const time in timeConsts) {
-    const unit = timeConsts[time];
+  const checkedUnits: TimeConstType[] = [];
+  timeConsts.forEach((unit) => {
     const checkbox = document.getElementById(
-      `checkbox${capitalize(time)}`,
+      `checkbox${capitalize(unit.key)}`,
     ) as HTMLInputElement;
     if (checkbox.checked) {
-      checkedUnits[time] = unit;
+      checkedUnits.push(unit);
     }
-  }
+  });
   return checkedUnits;
 }
 
