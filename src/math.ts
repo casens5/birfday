@@ -240,18 +240,18 @@ export interface InterestingNumberType {
   index: number;
 }
 
-export function getInterestingValues(n: number): InterestingNumberType[] {
-  const interestingValues = [];
+export function getInterestingNumbers(n: number): InterestingNumberType[] {
+  const interestingNumbers: InterestingNumberType[] = [];
 
   if (n >= 3) {
     const lucas = getNextLucas(n);
-    interestingValues.push(lucas);
+    interestingNumbers.push(lucas);
   }
 
   sequences.forEach((sequence) => {
     const index = sequence.numbers.findIndex((number: number) => number >= n);
     if (index != -1) {
-      interestingValues.push({
+      interestingNumbers.push({
         value: sequence.numbers[index],
         description: sequence.description,
         index: index,

@@ -1,4 +1,4 @@
-import { getInterestingValues } from "./math.js";
+import { getInterestingNumbers } from "./math.js";
 import { timeConsts } from "./timeConsts.js";
 import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
@@ -27,8 +27,8 @@ maxDate) {
         const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
         const nextDate = Temporal.Now.zonedDateTimeISO("utc").add(nextDuration);
         const nextAge = Math.ceil(duration.seconds / timeConsts[time].seconds);
-        const interestingValues = getInterestingValues(nextAge);
-        interestingValues.sort((a, b) => a.value - b.value);
+        const interestingNumbers = getInterestingNumbers(nextAge);
+        interestingNumbers.sort((a, b) => a.value - b.value);
         dates.push({
             value: nextAge,
             date: nextDate,
@@ -36,18 +36,18 @@ maxDate) {
             timeUnit: units[time].label,
             index: nextAge,
         });
-        interestingValues.forEach((interestingValue) => {
+        interestingNumbers.forEach((interestingNumber) => {
             const thisDuration = Temporal.Duration.from({
-                seconds: Math.round(interestingValue.value * timeConsts[time].seconds - duration.seconds),
+                seconds: Math.round(interestingNumber.value * timeConsts[time].seconds - duration.seconds),
             });
             const thisDate = Temporal.Now.zonedDateTimeISO("utc").add(thisDuration);
             if (Temporal.ZonedDateTime.compare(thisDate, maxDate) < 0) {
                 dates.push({
-                    value: interestingValue.value,
+                    value: interestingNumber.value,
                     date: thisDate,
-                    description: interestingValue.description,
+                    description: interestingNumber.description,
                     timeUnit: units[time].label,
-                    index: interestingValue.index,
+                    index: interestingNumber.index,
                 });
             }
         });
