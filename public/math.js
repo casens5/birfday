@@ -26,16 +26,16 @@ const initInterestingNums = [
     getNextTriangle,
     getNextSquareTriangle,
 ];
-const sequences = {
-    mersennePrime: {
+const sequences = [
+    {
         numbers: [3, 7, 31, 127, 8191, 131071, 524287, 2147483647],
         description: "mersenne prime",
     },
-    perfect: {
-        numbers: [],
+    {
+        numbers: [6, 28, 496, 8128, 33550336, 8589869056, 137438691328],
         description: "perfect number",
     },
-    taxicab: {
+    {
         numbers: [
             1729, 4104, 13832, 20683, 32832, 39312, 40033, 46683, 64232, 65728,
             110656, 110808, 134379, 149389, 165464, 171288, 195841, 216027, 216125,
@@ -44,19 +44,15 @@ const sequences = {
         ],
         description: "taxicab number",
     },
-    hardyRam: {
+    {
         numbers: [2, 1_729, 87_539_319, 6_963_472_309_248],
         description: "hardy-ramanujan number",
     },
-    lehmer: {
+    {
         numbers: [276, 552, 564, 660, 966],
         description: "lehmer number",
     },
-};
-// compute perfect numbers via the mersennes
-sequences.perfect.numbers = sequences.mersennePrime.numbers.map((x) => x * ((x + 1) / 2));
-// the last mersenne produces a perfect number larger than default integer size
-sequences.perfect.numbers.pop();
+];
 function getNextBase10(n) {
     // numbers that end in 0s in base 10
     // eg. 5, 8, 20, 400, 7000, etc.
@@ -201,23 +197,22 @@ function getNextSquareTriangle(n) {
         index: index,
     };
 }
-export function getInterestingValues(n) {
-    const interestingValues = [];
+export function getInterestingNumbers(n) {
+    const interestingNumbers = [];
     if (n >= 3) {
         const lucas = getNextLucas(n);
-        interestingValues.push(lucas);
+        interestingNumbers.push(lucas);
     }
-    for (const s in sequences) {
-        const sequence = sequences[s];
+    sequences.forEach((sequence) => {
         const index = sequence.numbers.findIndex((number) => number >= n);
         if (index != -1) {
-            interestingValues.push({
+            interestingNumbers.push({
                 value: sequence.numbers[index],
                 description: sequence.description,
                 index: index,
             });
         }
-    }
+    });
     const results = initInterestingNums.map((entry) => {
         if (Array.isArray(entry)) {
             const [func, arg] = entry;
@@ -225,5 +220,13 @@ export function getInterestingValues(n) {
         }
         return entry(n);
     });
-    return interestingValues.concat(results);
+    const allResults = interestingNumbers.concat(results);
+    /*const noDuplicates: InterestingNumberType[] = [];
+    allResults.forEach((interestingNumber) => {
+      if (!noDuplicates.some((item) => item.value === interestingNumber.value)) {
+        noDuplicates.push(interestingNumber);
+      }
+    });*/
+    //return noDuplicates;
+    return allResults;
 }
