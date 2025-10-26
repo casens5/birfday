@@ -1,5 +1,5 @@
 import { getInterestingNumbers, InterestingNumberType } from "./math.js";
-import { TimeConstType } from "./timeConsts.js";
+import { isZonedDateTimeInBounds, TimeConstType } from "./timeConsts.js";
 import { getCheckedUnits } from "./unitSelector.js";
 
 interface DateRow extends InterestingNumberType {
@@ -38,10 +38,12 @@ function getNextDates(
         Math.floor(duration.seconds / unit.seconds)) *
         unit.seconds,
     );
-    const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
-    const nextDate = Temporal.Now.zonedDateTimeISO("utc").add(nextDuration);
 
+    const now = Temporal.Now.zonedDateTimeISO("utc");
+    const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
+    const nextDate = now.add(nextDuration);
     const nextAge = Math.ceil(duration.seconds / unit.seconds);
+
     const interestingNumbers = getInterestingNumbers(nextAge);
     interestingNumbers.sort((a, b) => a.value - b.value);
 
@@ -53,13 +55,19 @@ function getNextDates(
       index: nextAge,
     });
 
-    interestingNumbers.forEach((interestingNumber) => {
+    // .every() loop to break for large durations
+    interestingNumbers.every((interestingNumber) => {
       const thisDuration = Temporal.Duration.from({
-        seconds: Math.round(
+        seconds: Math.ceil(
           interestingNumber.value * unit.seconds - duration.seconds,
         ),
       });
-      const thisDate = Temporal.Now.zonedDateTimeISO("utc").add(thisDuration);
+
+      if (!isZonedDateTimeInBounds(thisDuration, now)) {
+        return false;
+      }
+
+      const thisDate = now.add(thisDuration);
 
       if (Temporal.ZonedDateTime.compare(thisDate, maxDate) < 0) {
         dates.push({
@@ -70,6 +78,8 @@ function getNextDates(
           index: interestingNumber.index,
         });
       }
+
+      return true;
     });
   });
 

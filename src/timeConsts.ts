@@ -1,3 +1,28 @@
+export function isZonedDateTimeInBounds(
+  duration: Temporal.Duration,
+  zdt: Temporal.ZonedDateTime,
+): boolean {
+  const maxSeconds = 273_970 * 365.25 * 60 * 60 * 24;
+  const maxDuration = Temporal.Duration.from({ seconds: maxSeconds });
+  const epoch = Temporal.ZonedDateTime.from({
+    timeZone: "utc",
+    year: 1970,
+    month: 1,
+    day: 1,
+  });
+
+  const utcDuration = zdt.since(epoch).abs();
+  const referenceDuration = duration
+    .abs()
+    .add(utcDuration)
+    .round({ largestUnit: "seconds" });
+  if (referenceDuration.seconds > maxDuration.seconds) {
+    return false;
+  }
+
+  return true;
+}
+
 export interface TimeConstType {
   key: string;
   seconds: number;
