@@ -14,28 +14,17 @@ function createRow(dateRow) {
     row.append(timeUnitDiv, valueDiv, labelDiv, dateDiv);
     return row;
 }
-function getNextDates(duration, units, 
+function getNextDates(d, units, 
 //numbers: InterestingNumberType[],
 maxDate) {
+    const now = Temporal.Now.zonedDateTimeISO("utc");
+    const duration = d.abs().round({ largestUnit: "seconds", relativeTo: now });
     const dates = [];
     units.forEach((unit) => {
-        // overly complex implementation of % which handles floats as moduluses
-        const secondsRemaining = Math.ceil((duration.seconds / unit.seconds -
-            Math.floor(duration.seconds / unit.seconds)) *
-            unit.seconds);
         const now = Temporal.Now.zonedDateTimeISO("utc");
-        const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
-        const nextDate = now.add(nextDuration);
         const nextAge = Math.ceil(duration.seconds / unit.seconds);
         const interestingNumbers = getInterestingNumbers(nextAge);
         interestingNumbers.sort((a, b) => a.value - b.value);
-        dates.push({
-            value: nextAge,
-            date: nextDate,
-            description: "next integer",
-            timeUnit: unit.label,
-            index: nextAge,
-        });
         // .every() loop to break for large durations
         interestingNumbers.every((interestingNumber) => {
             const thisDuration = Temporal.Duration.from({

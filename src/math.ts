@@ -41,6 +41,18 @@ interface AnnotatedNumber {
   index: number;
 }
 
+function getNextInteger(n: number): AnnotatedNumber {
+  // obvious function but actually makes other functions (getNextDates) cleaner
+
+  return {
+    value: Math.ceil(n),
+    description: "next integer",
+    // should be n itself, but a low index maximizes(?) `coolness`.  perhaps
+    // coolness should be its own field instead of composed of index and value?
+    index: 0,
+  };
+}
+
 function getNextBase10(n: number): AnnotatedNumber {
   // numbers that end in 0s in base 10
   // eg. 5, 8, 20, 400, 7000, etc.
@@ -212,6 +224,7 @@ export interface InterestingNumberType {
 }
 
 const initInterestingNums: NumberGetter[] = [
+  getNextInteger,
   getNextBase10,
   getNextRepDigit,
   [getNextXToPower, 2],

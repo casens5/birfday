@@ -25,35 +25,20 @@ function createRow(dateRow: DateRow): HTMLTableRowElement {
 }
 
 function getNextDates(
-  duration: Temporal.Duration,
+  d: Temporal.Duration,
   units: TimeConstType[],
   //numbers: InterestingNumberType[],
   maxDate: Temporal.ZonedDateTime,
 ) {
+  const now = Temporal.Now.zonedDateTimeISO("utc");
+  const duration = d.abs().round({ largestUnit: "seconds", relativeTo: now });
   const dates: DateRow[] = [];
   units.forEach((unit) => {
-    // overly complex implementation of % which handles floats as moduluses
-    const secondsRemaining = Math.ceil(
-      (duration.seconds / unit.seconds -
-        Math.floor(duration.seconds / unit.seconds)) *
-        unit.seconds,
-    );
-
     const now = Temporal.Now.zonedDateTimeISO("utc");
-    const nextDuration = Temporal.Duration.from({ seconds: secondsRemaining });
-    const nextDate = now.add(nextDuration);
     const nextAge = Math.ceil(duration.seconds / unit.seconds);
 
     const interestingNumbers = getInterestingNumbers(nextAge);
     interestingNumbers.sort((a, b) => a.value - b.value);
-
-    dates.push({
-      value: nextAge,
-      date: nextDate,
-      description: "next integer",
-      timeUnit: unit.label,
-      index: nextAge,
-    });
 
     // .every() loop to break for large durations
     interestingNumbers.every((interestingNumber) => {
