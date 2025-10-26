@@ -1,3 +1,12 @@
+function populateUsersTimeZone() {
+  const zone = Temporal.Now.timeZoneId();
+  const userOption = document.getElementById(
+    "userTimeZone",
+  ) as HTMLOptionElement;
+  userOption.textContent = zone;
+  userOption.value = zone;
+}
+
 function populateTimeZones() {
   populateUsersTimeZone();
 
@@ -16,13 +25,23 @@ function populateTimeZones() {
   });
 }
 
-function populateUsersTimeZone() {
-  const zone = Temporal.Now.timeZoneId();
-  const userOption = document.getElementById(
-    "userTimeZone",
-  ) as HTMLOptionElement;
-  userOption.textContent = zone;
-  userOption.value = zone;
+document
+  .getElementById("showTimeCheckbox")!
+  .addEventListener("change", toggleTimes);
+
+function toggleTimes() {
+  const checkbox = document.getElementById(
+    "showTimeCheckbox",
+  ) as HTMLInputElement;
+  const timeInputs = document.getElementsByClassName("timeInput");
+  const toggleState = checkbox.checked;
+  Array.from(timeInputs).forEach((element) => {
+    if (toggleState) {
+      element.classList.remove("hidden");
+    } else {
+      element.classList.add("hidden");
+    }
+  });
 }
 
 populateTimeZones();
