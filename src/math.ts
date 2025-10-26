@@ -201,15 +201,12 @@ function getNextSquareTriangle(n: number): AnnotatedNumber {
   // F(1) = 1, F(2) = 9
   // 1, 9, 36, 100, 225, 441, etc.
 
-  const root = Math.ceil(n ** 0.5);
-  const triangle = getNextTriangle(root);
-  const index = triangle.index;
-  const value = triangle.value ** 2;
+  const triangle = getNextTriangle(Math.ceil(n ** 0.5));
 
   return {
-    value: value,
-    description: `square of triangle number, T(${index})^2`,
-    index: index,
+    value: triangle.value ** 2,
+    description: `square of triangle number, T(${triangle.index})^2`,
+    index: triangle.index,
   };
 }
 
