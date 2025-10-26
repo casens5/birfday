@@ -1,5 +1,4 @@
 import { getInterestingNumbers } from "./math.js";
-import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
 function createRow(dateRow) {
     const row = document.createElement("tr");
@@ -61,8 +60,8 @@ function submitDatesCalculation() {
     table.classList.remove("hidden");
     const birthdateInput = document.getElementById("birthdateInput");
     const birthTimeInput = document.getElementById("birthTimeInput");
-    const timeZone = getTimeZone();
-    const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZone}]`;
+    const timeZoneSelect = document.getElementById("timeZones");
+    const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZoneSelect.value}]`;
     const startDate = Temporal.ZonedDateTime.from(birthdateString);
     const now = Temporal.Now.instant();
     const duration = now.since(startDate.toInstant());

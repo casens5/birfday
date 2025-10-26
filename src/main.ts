@@ -1,6 +1,5 @@
 import { getInterestingNumbers, InterestingNumberType } from "./math.js";
 import { TimeConstType } from "./timeConsts.js";
-import { getTimeZone } from "./timeZoneSelector.js";
 import { getCheckedUnits } from "./unitSelector.js";
 
 interface DateRow extends InterestingNumberType {
@@ -91,9 +90,11 @@ function submitDatesCalculation() {
   const birthTimeInput = document.getElementById(
     "birthTimeInput",
   ) as HTMLInputElement;
-  const timeZone = getTimeZone();
+  const timeZoneSelect = document.getElementById(
+    "timeZones",
+  ) as HTMLSelectElement;
 
-  const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZone}]`;
+  const birthdateString = `${birthdateInput.value}T${birthTimeInput.value}Z[${timeZoneSelect.value}]`;
   const startDate = Temporal.ZonedDateTime.from(birthdateString);
 
   const now = Temporal.Now.instant();

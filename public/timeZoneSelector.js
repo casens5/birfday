@@ -1,11 +1,17 @@
-function populateExtendedTimeZones() {
+"use strict";
+function populateTimeZones() {
+    populateUsersTimeZone();
+    const userTimeZone = Temporal.Now.timeZoneId();
+    const existingZones = [userTimeZone, "UTC"];
     const zones = Intl.supportedValuesOf("timeZone");
-    const selector = document.getElementById("timeZonesExtended");
+    const selector = document.getElementById("timeZones");
     zones.forEach((zone) => {
         const option = document.createElement("option");
         option.textContent = zone;
         option.value = zone;
-        selector.append(option);
+        if (!existingZones.includes(zone)) {
+            selector.append(option);
+        }
     });
 }
 function populateUsersTimeZone() {
@@ -14,26 +20,4 @@ function populateUsersTimeZone() {
     userOption.textContent = zone;
     userOption.value = zone;
 }
-export function getTimeZone() {
-    const timeZoneSelectMain = document.getElementById("timeZones");
-    const timeZoneSelectExtended = document.getElementById("timeZonesExtended");
-    if (timeZoneSelectMain.value === "(other)") {
-        return timeZoneSelectExtended.value;
-    }
-    else {
-        return timeZoneSelectMain.value;
-    }
-}
-document
-    .getElementById("timeZones")
-    .addEventListener("change", revealExtendedTimeZones);
-function revealExtendedTimeZones() {
-    const timeZones = document.getElementById("timeZones");
-    const inputLabel = document.getElementById("timeZonesExtendedLabel");
-    inputLabel.classList.remove("hidden");
-    if (timeZones.value !== "(other)") {
-        inputLabel.classList.add("hidden");
-    }
-}
-populateExtendedTimeZones();
-populateUsersTimeZone();
+populateTimeZones();
