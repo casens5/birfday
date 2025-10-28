@@ -16,7 +16,7 @@ function createRow(dateRow: DateRow): HTMLTableRowElement {
   const dateDiv = document.createElement("td");
 
   timeUnitDiv.textContent = dateRow.timeUnit;
-  valueDiv.textContent = dateRow.value.toString();
+  valueDiv.textContent = dateRow.value.toLocaleString(); // commas for thousands!
   labelDiv.textContent = dateRow.description;
   dateDiv.textContent = dateRow.date.toString();
 
