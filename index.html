@@ -25,31 +25,34 @@
         </strong>
       </noscript>
       <fieldset id="dateInput">
-        <label>
-          birthday:
-          <input
-            type="date"
-            id="birthdateInput"
-            required
-            aria-required="true"
-          />
-        </label>
-        <label>
-          show times:
-          <input type="checkbox" id="showTimeCheckbox" />
-        </label>
-        <label class="timeInput hidden">
+        <label for="birthdateInput" class="justify-end">birthday:</label>
+        <input
+          type="date"
+          id="birthdateInput"
+          class="justify-start"
+          required
+          aria-required="true"
+        />
+        <label for="showTimeCheckbox" class="justify-end">show times:</label>
+        <input type="checkbox" id="showTimeCheckbox" class="justify-start" />
+        <label for="birthTimeInput" class="timeInput hidden justify-end">
           time:
-          <!-- step="1" allows users to enter seconds -->
-          <input type="time" id="birthTimeInput" value="00:00:00" step="1" />
         </label>
-        <label class="timeInput hidden">
+        <!-- step="1" allows users to enter seconds -->
+        <input
+          type="time"
+          id="birthTimeInput"
+          value="00:00:00"
+          step="1"
+          class="timeInput hidden justify-start"
+        />
+        <label for="timeZones" class="timeInput hidden justify-end">
           time zone:
-          <select id="timeZones">
-            <option id="userTimeZone" value="(browser)">(browser)</option>
-            <option value="utc">UTC</option>
-          </select>
         </label>
+        <select id="timeZones" class="timeInput hidden justify-start">
+          <option id="userTimeZone" value="(browser)">(browser)</option>
+          <option value="utc">UTC</option>
+        </select>
       </fieldset>
       <fieldset id="unitControl">
         <legend id="unitLegend">

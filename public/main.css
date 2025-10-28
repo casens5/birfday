@@ -191,8 +191,8 @@ select {
 }
 
 #dateInput {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -211,8 +211,23 @@ select {
   display: none !important;
 }
 
+.justify-start {
+  justify-self: flex-start;
+}
+
+.justify-end {
+  justify-self: flex-end;
+}
+
+#timeZones {
+  max-width: 9rem;
+}
+
 @media (width > 500px) {
   .content {
     margin: 16px;
+  }
+  #timeZones {
+    max-width: auto;
   }
 }
