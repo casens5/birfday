@@ -69,10 +69,6 @@ button,
   -webkit-appearance: button;
 }
 
-legend {
-  padding: 0;
-}
-
 progress {
   vertical-align: baseline;
 }
@@ -142,6 +138,8 @@ body {
 
 legend {
   border-width: 0;
+  padding: 0;
+  margin-inline: auto;
 }
 
 button {
@@ -156,7 +154,12 @@ button:hover {
 }
 
 fieldset {
-  border-width: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-width: 0;
+  margin: 0;
+  padding: 0;
 }
 
 #noscript {
@@ -223,11 +226,16 @@ select {
   max-width: 9rem;
 }
 
+label {
+  display: flex;
+  gap: 1rem;
+}
+
 @media (width > 500px) {
   .content {
     margin: 16px;
   }
   #timeZones {
-    max-width: auto;
+    max-width: none;
   }
 }

@@ -5,7 +5,6 @@ function createCheckbox(key, label) {
     const labelElement = document.createElement("label");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.style.marginRight = "12px";
     checkbox.id = `checkbox${capitalize(key)}`;
     labelElement.append(checkbox, label);
     return labelElement;
