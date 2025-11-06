@@ -51,26 +51,4 @@ export function getCheckedUnits() {
   return checkedUnits;
 }
 
-document
-  .getElementById("unitCheckbox")!
-  .addEventListener("change", toggleUnitsDrawer);
-
-function toggleUnitsDrawer() {
-  const checkbox = document.getElementById("unitCheckbox") as HTMLInputElement;
-
-  const drawer = document.getElementById("unitDrawer")!;
-  const upArrow = document.getElementById("unitUpArrow")!;
-  const downArrow = document.getElementById("unitDownArrow")!;
-
-  if (checkbox.checked) {
-    drawer.classList.remove("hidden");
-    downArrow.classList.add("hidden");
-    upArrow.classList.remove("hidden");
-  } else {
-    drawer.classList.add("hidden");
-    downArrow.classList.remove("hidden");
-    upArrow.classList.add("hidden");
-  }
-}
-
 createTimeOptions();

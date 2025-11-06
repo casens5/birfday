@@ -20,20 +20,4 @@ function populateTimeZones() {
         }
     });
 }
-document
-    .getElementById("showTimeCheckbox")
-    .addEventListener("change", toggleTimes);
-function toggleTimes() {
-    const checkbox = document.getElementById("showTimeCheckbox");
-    const timeInputs = document.getElementsByClassName("timeInput");
-    const toggleState = checkbox.checked;
-    Array.from(timeInputs).forEach((element) => {
-        if (toggleState) {
-            element.classList.remove("hidden");
-        }
-        else {
-            element.classList.add("hidden");
-        }
-    });
-}
 populateTimeZones();

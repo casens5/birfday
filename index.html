@@ -33,38 +33,34 @@
           required
           aria-required="true"
         />
-        <label for="showTimeCheckbox" class="justify-end">show times:</label>
-        <input type="checkbox" id="showTimeCheckbox" class="justify-start" />
-        <label for="birthTimeInput" class="timeInput hidden justify-end">
-          time:
-        </label>
-        <!-- step="1" allows users to enter seconds -->
-        <input
-          type="time"
-          id="birthTimeInput"
-          value="00:00:00"
-          step="1"
-          class="timeInput hidden justify-start"
-        />
-        <label for="timeZones" class="timeInput hidden justify-end">
-          time zone:
-        </label>
-        <select id="timeZones" class="timeInput hidden justify-start">
-          <option id="userTimeZone" value="(browser)">(browser)</option>
-          <option value="utc">UTC</option>
-        </select>
       </fieldset>
-      <fieldset id="unitControl">
-        <legend>
-          <label for="unitCheckbox">
-            units
-            <span id="unitUpArrow" class="hidden">▲</span>
-            <span id="unitDownArrow">▼</span>
+      <details>
+        <summary>enter time</summary>
+        <fieldset>
+          <label for="birthTimeInput" class="timeInput justify-end">
+            time:
           </label>
-          <input type="checkbox" id="unitCheckbox" class="hidden" />
-        </legend>
-        <div id="unitDrawer" class="hidden"></div>
-      </fieldset>
+          <!-- step="1" allows users to enter seconds -->
+          <input
+            type="time"
+            id="birthTimeInput"
+            value="00:00:00"
+            step="1"
+            class="timeInput justify-start"
+          />
+          <label for="timeZones" class="timeInput justify-end">
+            time zone:
+          </label>
+          <select id="timeZones" class="timeInput justify-start">
+            <option id="userTimeZone" value="(browser)">(browser)</option>
+            <option value="utc">UTC</option>
+          </select>
+        </fieldset>
+      </details>
+      <details id="unitControl">
+        <summary>units</summary>
+        <fieldset id="unitDrawer"></fieldset>
+      </details>
       <button id="getDatesButton">submit</button>
       <table id="outputTable" class="hidden">
         <thead>
