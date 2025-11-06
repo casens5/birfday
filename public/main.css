@@ -172,7 +172,8 @@ fieldset {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 #unitLegend {
@@ -195,7 +196,7 @@ select {
 
 #dateInput {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: max-content max-content;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -237,5 +238,8 @@ label {
   }
   #timeZones {
     max-width: none;
+  }
+  #dateInput {
+    grid-template-columns: 1fr 1fr;
   }
 }
