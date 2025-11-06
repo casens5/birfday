@@ -48,9 +48,10 @@ maxDate) {
     });
     return dates;
 }
-document
-    .getElementById("getDatesButton")
-    .addEventListener("click", submitDatesCalculation);
+document.querySelector("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitDatesCalculation();
+});
 function submitDatesCalculation() {
     const table = document.getElementById("outputTable");
     table.classList.remove("hidden");

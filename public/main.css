@@ -94,6 +94,15 @@ progress {
 
 summary {
   display: list-item;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+summary:hover {
+  background: #fff3;
 }
 
 :root {
@@ -128,18 +137,23 @@ th {
   padding: 6px;
 }
 
-body {
-  min-height: 100vh;
-  height: 100%;
-  background: oklch(0.147 0.004 49.25);
-  color: oklch(0.97 0.001 106.424);
-  font-family: sans-serif;
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-legend {
-  border-width: 0;
-  padding: 0;
-  margin-inline: auto;
+body {
+  display: flex;
+  min-height: 100vh;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0 0.2 49);
+  color: oklch(0.97 0.2 106);
+  font-family: sans-serif;
 }
 
 button {
@@ -154,12 +168,41 @@ button:hover {
 }
 
 fieldset {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+details {
+  width: fit-content;
+  border-radius: 0.5rem;
+}
+
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-width: 0;
-  margin: 0;
-  padding: 0;
+  justify-content: center;
+  gap: 1rem;
+}
+
+label {
+  display: flex;
+  gap: 1rem;
+}
+
+input,
+select {
+  background: oklch(0.22 0.2 56);
+  color: oklch(0.97 0.2 106);
+  border-color: oklch(0.37 0.2 68);
+  border-width: 1px;
 }
 
 #noscript {
@@ -169,46 +212,20 @@ fieldset {
 }
 
 #unitDrawer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  grid-template-columns: auto auto;
 }
 
-#unitLegend {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 8px;
-}
 #unitControl {
-  margin-top: 16px;
-}
-
-input,
-select {
-  background: oklch(0.216 0.006 56.043);
-  color: oklch(0.97 0.001 106.424);
-  border-color: oklch(0.374 0.01 67.558);
-  border-width: 1px;
+  padding: 0rem;
+  background: oklch(0.2 0.2 49);
 }
 
 #dateInput {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 4px;
+  padding: 0;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  gap: 16px;
-  align-items: center;
+#timeZones {
+  max-width: 9rem;
 }
 
 .hidden {
@@ -223,23 +240,12 @@ select {
   justify-self: flex-end;
 }
 
-#timeZones {
-  max-width: 9rem;
-}
-
-label {
-  display: flex;
-  gap: 1rem;
-}
-
 @media (width > 500px) {
-  .content {
-    margin: 16px;
-  }
   #timeZones {
     max-width: none;
   }
-  #dateInput {
+
+  fieldset {
     grid-template-columns: 1fr 1fr;
   }
 }

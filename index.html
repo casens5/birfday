@@ -18,50 +18,52 @@
   </head>
 
   <body>
-    <div class="content">
+    <main>
       <noscript>
         <strong id="noscript">
           Please enable JavaScript to view this page.
         </strong>
       </noscript>
-      <fieldset id="dateInput">
-        <label for="birthdateInput" class="justify-end">birthday:</label>
-        <input
-          type="date"
-          id="birthdateInput"
-          class="justify-start"
-          required
-          aria-required="true"
-        />
-      </fieldset>
-      <details>
-        <summary>enter time</summary>
-        <fieldset>
-          <label for="birthTimeInput" class="timeInput justify-end">
-            time:
-          </label>
-          <!-- step="1" allows users to enter seconds -->
+      <form>
+        <fieldset id="dateInput">
+          <label for="birthdateInput" class="justify-end">birthday:</label>
           <input
-            type="time"
-            id="birthTimeInput"
-            value="00:00:00"
-            step="1"
-            class="timeInput justify-start"
+            type="date"
+            id="birthdateInput"
+            class="justify-start"
+            required
+            aria-required="true"
           />
-          <label for="timeZones" class="timeInput justify-end">
-            time zone:
-          </label>
-          <select id="timeZones" class="timeInput justify-start">
-            <option id="userTimeZone" value="(browser)">(browser)</option>
-            <option value="utc">UTC</option>
-          </select>
         </fieldset>
-      </details>
-      <details id="unitControl">
-        <summary>units</summary>
-        <fieldset id="unitDrawer"></fieldset>
-      </details>
-      <button id="getDatesButton">submit</button>
+        <details>
+          <summary>birth time? (optional)</summary>
+          <fieldset>
+            <label for="birthTimeInput" class="timeInput justify-end">
+              time:
+            </label>
+            <!-- step="1" allows users to enter seconds -->
+            <input
+              type="time"
+              id="birthTimeInput"
+              value="00:00:00"
+              step="1"
+              class="timeInput justify-start"
+            />
+            <label for="timeZones" class="timeInput justify-end">
+              time zone:
+            </label>
+            <select id="timeZones" class="timeInput justify-start">
+              <option id="userTimeZone" value="(browser)">(browser)</option>
+              <option value="utc">UTC</option>
+            </select>
+          </fieldset>
+        </details>
+        <details id="unitControl">
+          <summary>units</summary>
+          <fieldset id="unitDrawer"></fieldset>
+        </details>
+        <button id="getDatesButton">submit</button>
+      </form>
       <table id="outputTable" class="hidden">
         <thead>
           <th>time unit</th>
@@ -71,6 +73,6 @@
         </thead>
         <tbody id="output"></tbody>
       </table>
-    </div>
+    </main>
   </body>
 </html>
