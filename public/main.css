@@ -55,11 +55,14 @@ button,
 input,
 optgroup,
 select,
+summary,
+details,
 textarea {
   font-family: inherit;
   font-size: 100%;
   line-height: 1.15;
   margin: 0;
+  color: inherit;
 }
 
 button,
@@ -90,19 +93,6 @@ progress {
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   font: inherit;
-}
-
-summary {
-  display: list-item;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
-
-summary:hover {
-  background: #fff3;
 }
 
 :root {
@@ -152,19 +142,29 @@ body {
   align-items: center;
   justify-content: center;
   background: oklch(0 0.2 49);
-  color: oklch(0.97 0.2 106);
+  color: oklch(0.92 0.02 106);
   font-family: sans-serif;
 }
 
-button {
-  width: fit-content;
-  border-radius: 0.25rem;
-  background: rgb(23 37 84);
-  padding: 0.5rem;
-  color: oklch(0.97 0.001 106.424);
+summary {
+  margin-left: auto;
+  margin-right: auto;
 }
-button:hover {
-  background: rgb(30 58 138);
+
+button,
+summary {
+  width: fit-content;
+  border-radius: 0.2rem;
+  border-width: 0.2rem;
+  border-color: oklch(1 0 0 / 0.3);
+  border-style: outset;
+  background: oklch(0.2 0.1 19);
+  padding: 0.5rem;
+}
+
+button:hover,
+summary:hover {
+  background: oklch(0.4 0.1 19);
 }
 
 fieldset {
@@ -199,9 +199,9 @@ label {
 
 input,
 select {
-  background: oklch(0.22 0.2 56);
-  color: oklch(0.97 0.2 106);
-  border-color: oklch(0.37 0.2 68);
+  background: oklch(0.2 0.1 19);
+  color: inherit;
+  border-color: oklch(1 0 0 / 0.3);
   border-width: 1px;
 }
 
@@ -217,7 +217,7 @@ select {
 
 #unitControl {
   padding: 0rem;
-  background: oklch(0.2 0.2 49);
+  background: oklch(0.2 0.05 19);
 }
 
 #dateInput {
